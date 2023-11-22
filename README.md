@@ -1,7 +1,7 @@
-# Property Listing
+# Rentals
 
-> Simple listing application to view properties
-
+> Simple Property Rental Application
+ 
 ## Requirements
 
 - Install Node
