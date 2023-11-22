@@ -12,7 +12,7 @@
     "start": "concurrently --kill-others-on-fail \"npm run start:api\" \"npm run start:web\"",
     "start:web": "npm run -w @rentals/web start",
     "start:api": "npm run -w @rentals/api start",
-    "seed": "cd packages/api/ '&& npm run seed"
+    "seed": "cd packages/api/ && npm run seed"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
