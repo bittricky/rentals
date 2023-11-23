@@ -6,7 +6,8 @@ import { Application } from "express";
 import express = require("express");
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
-import { typeDefs, resolvers } from "./graphql";
+import { resolvers } from "./resolvers";
+import { typeDefs } from "./resolvers/typeDefs";
 
 const mount = async (app: Application) => {
   const db = await connectDatabase();
