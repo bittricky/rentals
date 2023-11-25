@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { render } from "react-dom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { Viewer } from "./graphql/lib/types";
 import {
   Home,
   Host,
@@ -20,7 +21,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const initialViewer: Viewer = {
+  id: null,
+  token: null,
+  avatar: null,
+  hasWallet: null,
+  didRequest: false,
+};
+
 const App = () => {
+  const [viewer, setViewer] = useState<Viewer>(initialViewer);
   return (
     <Router>
       <Routes>
@@ -29,7 +39,10 @@ const App = () => {
         <Route path="/listing/:id" element={<Listing />} />
         <Route path="/listings/:location?" element={<Listings />} />
         <Route path="/user/:id" element={<User />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          Component={(props) => <Login {...props} setViewer={setViewer} />}
+        />
         <Route element={<NotFound />} />
       </Routes>
     </Router>
