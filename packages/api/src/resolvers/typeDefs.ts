@@ -9,7 +9,7 @@ export const typeDefs = gql`
     didRequest: Boolean!
   }
 
-  input LogInInput {
+  input LoginInput {
     code: String!
   }
 
@@ -18,7 +18,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    logIn(input: LogInInput): String!
+    logIn(input: LoginInput): String!
     logOut: Viewer!
   }
 `;

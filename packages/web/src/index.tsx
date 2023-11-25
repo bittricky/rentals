@@ -2,7 +2,15 @@ import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { Home, Host, Listing, User, NotFound, Listings } from "./sections";
+import {
+  Home,
+  Host,
+  Listing,
+  User,
+  NotFound,
+  Listings,
+  Login,
+} from "./sections";
 import reportWebVitals from "./reportWebVitals";
 
 import "./styles/index.css";
@@ -21,6 +29,7 @@ const App = () => {
         <Route path="/listing/:id" element={<Listing />} />
         <Route path="/listings/:location?" element={<Listings />} />
         <Route path="/user/:id" element={<User />} />
+        <Route path="/login" element={<Login />} />
         <Route element={<NotFound />} />
       </Routes>
     </Router>

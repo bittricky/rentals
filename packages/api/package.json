@@ -1,6 +1,7 @@
 {
   "name": "@rentals/api",
   "version": "1.0.0",
+  "packageManager": "yarn@4.0.0",
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"
@@ -18,7 +19,6 @@
     "apollo-server-express": "^3.4.0",
     "express": "^4.17.1",
     "googleapis": "^128.0.0",
-    "graphql": "^15.7.0",
     "lodash.merge": "^4.6.2",
     "mongodb": "^4.1.3"
   },

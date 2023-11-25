@@ -1,6 +1,7 @@
 {
   "name": "rentals",
   "version": "1.0.0",
+  "private": true,
   "description": "Property Rentals Application",
   "workspaces": [
     "packages/*"
@@ -12,7 +13,12 @@
     "start": "concurrently --kill-others-on-fail \"npm run start:api\" \"npm run start:web\"",
     "start:web": "npm run -w @rentals/web start",
     "start:api": "npm run -w @rentals/api start",
-    "seed": "cd packages/api/ && npm run seed"
+    "seed": "cd packages/api/ && npm run seed",
+    "gen:schema": "cd packages/web/ && npm run gen:schema",
+    "gen:generate": "cd packages/web/ && npm run gen:generate"
+  },
+  "engines": {
+    "node": ">=17.0.0"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
@@ -29,5 +35,13 @@
   "bugs": {
     "url": "https://github.com/bittricky/property-listing/issues"
   },
-  "homepage": "https://github.com/bittricky/property-listing#readme"
+  "homepage": "https://github.com/bittricky/property-listing#readme",
+  "dependencies": {
+    "apollo": "^2.34.0",
+    "graphql": "^15.8.0"
+  },
+  "resolutions": {
+    "graphql": "^15.8.0",
+    "@apollo/federation": "0.38.1"
+  }
 }
