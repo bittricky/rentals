@@ -1,14 +1,13 @@
 # Rentals
 
 > Simple Property Rental Application
- 
+
 ## Requirements
 
 - Install Node
   - on OSX , install git and type 'brew install git'
   - on OSX, install [home brew](http://brew.sh/) and type `brew install node`
   - on Windows, use the installer available at [nodejs.org](http://nodejs.org/)
-  - On OSX you can alleviate the need to run as sudo by [following John Papa's instructions](http://jpapa.me/nomoresudo)
 
 ## Getting Started
 

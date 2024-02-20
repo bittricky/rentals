@@ -7,16 +7,18 @@ import {
   LogIn as LoginData,
   LogInVariables,
 } from "../../graphql/mutations/LogIn/__generated__/LogIn";
-import { AuthUrl as AuthUrlData } from "../../graphql/queries/AuthUrl/__generated__/AuthUrl";
+import {
+  AuthUrl,
+  AuthUrl as AuthUrlData,
+} from "../../graphql/queries/AuthUrl/__generated__/AuthUrl";
 import { displaySuccessNotification, displayErrorMessage } from "../../utils";
-import { Viewer } from "../../graphql/lib/types";
 import { ErrorBanner } from "../../components";
 
 interface Props {
-  setViewer: (viewer: Viewer) => void;
+  setViewer: (viewer: any) => void;
 }
 
-export const Login = ({ setViewer }: Props) => {
+export const Login = ({ setViewer }: Props): JSX.Element => {
   const client = useApolloClient();
   const [logIn, { data: logInData, loading: logInLoading, error: logInError }] =
     useMutation<LoginData, LogInVariables>(LOG_IN, {
@@ -39,7 +41,7 @@ export const Login = ({ setViewer }: Props) => {
 
   const handleAuthorize = async () => {
     try {
-      const { data } = client.readQuery<AuthUrlData>({
+      const { data }: AuthUrl | any = client.readQuery<AuthUrlData>({
         query: AUTH_URL,
       });
 
@@ -59,7 +61,7 @@ export const Login = ({ setViewer }: Props) => {
 
   if (logInData && logInData.logIn) {
     const { id: viewerId } = logInData.logIn;
-    return redirect(`/user/${viewerId}`);
+    redirect(`/user/${viewerId}`);
   }
 
   const loginErrorBanner = logInError ? (
