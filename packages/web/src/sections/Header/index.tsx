@@ -9,7 +9,7 @@ interface Props {
   setViewer: (viewer: Viewer) => void;
 }
 
-export const Header = ({ viewer }: Props) => {
+export const Header = ({ viewer, setViewer }: Props) => {
   return (
     <div>
       <div>
