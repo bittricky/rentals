@@ -1,4 +1,5 @@
 import React from "react";
+import { Pane, Alert } from "evergreen-ui";
 
 interface Props {
   message?: string;
@@ -8,16 +9,13 @@ interface Props {
 export const ErrorBanner = (props: Props) => {
   const {
     message = "Uh oh! Something went wrong :(",
-    description = "Look like something went wrong. Please check your connection and/or try again soon.",
+    description = "Looks like something went wrong. Please check your connection and/or try again soon.",
   } = props;
   return (
-    <>
-      <div>
-        <div>
-          <span>{message}</span>
-          <span>{description}</span>
-        </div>
-      </div>
-    </>
+    <Pane>
+      <Alert intent="danger" title={message} marginBottom={32}>
+        {description}
+      </Alert>
+    </Pane>
   );
 };
