@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Pane, Heading } from "evergreen-ui";
 
 import { Viewer } from "../../graphql/lib/types";
 import { MenuItems } from "./components/MenuItems";
@@ -11,13 +12,16 @@ interface Props {
 
 export const Header = ({ viewer, setViewer }: Props) => {
   return (
-    <div>
-      <div>
-        <Link to="/">Logo</Link>
-      </div>
-      <div>
-        <MenuItems viewer={viewer} setViewer={setViewer} />
-      </div>
-    </div>
+    <Pane
+      display="flex"
+      justifyContent="space-between"
+      padding={16}
+      borderBottom
+    >
+      <Link to="/">
+        <Heading size={600}>Logo</Heading>
+      </Link>
+      <MenuItems viewer={viewer} setViewer={setViewer} />
+    </Pane>
   );
 };

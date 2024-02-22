@@ -1,9 +1,9 @@
 import { google } from "googleapis";
 
 const auth = new google.auth.OAuth2(
-  process.env["G_CLIENT_ID"],
-  process.env["G_CLIENT_SECRET"],
-  `${process.env["PUBLIC_URL"]}/login`
+  process.env.G_CLIENT_ID,
+  process.env.G_CLIENT_SECRET,
+  `${process.env.PUBLIC_URL}/login`
 );
 
 export const Google = {
@@ -14,9 +14,12 @@ export const Google = {
       "https://www.googleapis.com/auth/userinfo.profile",
     ],
   }),
-  logIn: async (code: string) => {
-    const { tokens } = await auth.getToken(code);
+  logIn: logInHandler,
+};
 
+async function logInHandler(code: string) {
+  try {
+    const { tokens } = await auth.getToken(code);
     auth.setCredentials(tokens);
 
     const { data } = await google.people({ version: "v1", auth }).people.get({
@@ -25,5 +28,8 @@ export const Google = {
     });
 
     return { user: data };
-  },
-};
+  } catch (error) {
+    console.error("Error logging in with Google:", error.message);
+    throw new Error("Failed to log in with Google: " + error.message);
+  }
+}

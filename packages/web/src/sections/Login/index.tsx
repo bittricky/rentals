@@ -1,16 +1,15 @@
 import { useEffect, useRef } from "react";
 import { redirect } from "react-router-dom";
 import { useApolloClient, useMutation } from "@apollo/client";
+import { Pane, Heading, Paragraph, Button, Text } from "evergreen-ui";
+
 import { LOG_IN } from "../../graphql/mutations/LogIn";
 import { AUTH_URL } from "../../graphql/queries/AuthUrl";
 import {
   LogIn as LoginData,
   LogInVariables,
 } from "../../graphql/mutations/LogIn/__generated__/LogIn";
-import {
-  AuthUrl,
-  AuthUrl as AuthUrlData,
-} from "../../graphql/queries/AuthUrl/__generated__/AuthUrl";
+import { AuthUrl as AuthUrlData } from "../../graphql/queries/AuthUrl/__generated__/AuthUrl";
 import { displaySuccessNotification, displayErrorMessage } from "../../utils";
 import { ErrorBanner } from "../../components";
 
@@ -41,7 +40,7 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
 
   const handleAuthorize = async () => {
     try {
-      const { data }: AuthUrl | any = client.readQuery<AuthUrlData>({
+      const { data } = await client.query<AuthUrlData>({
         query: AUTH_URL,
       });
 
@@ -69,21 +68,48 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
   ) : null;
 
   return (
-    <>
-      {loginErrorBanner}
-      <div>
-        <h2>Login to Rentals</h2>
-        <p>
+    <Pane
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+      background="tint2"
+    >
+      <Pane
+        width={400}
+        textAlign="center"
+        padding={24}
+        borderRadius={8}
+        border="default"
+        elevation={2}
+        background="white"
+      >
+        {loginErrorBanner}
+        <Heading size={600}>Login to your Rentals</Heading>
+        <Paragraph marginTop={8}>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod, quae
-          voluptatum. Quisquam, voluptate. Quisquam, voluptate.{" "}
-        </p>
-        <button onClick={handleAuthorize}>Sign in with Google</button>
-        <p>
-          Note: By signing in, you'll be redirected to the Google consent form
-          to sign in with your Google account.
-        </p>
-      </div>
-    </>
+          voluptatum. Quisquam, voluptate. Quisquam, voluptate.
+        </Paragraph>
+        <Pane
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          marginTop={16}
+        >
+          <Button
+            marginBottom={8}
+            appearance="primary"
+            onClick={handleAuthorize}
+          >
+            Sign in with Google
+          </Button>
+          <Text size={300} color="muted">
+            Note: By signing in, you'll be redirected to the Google consent form
+            to sign in with your Google account.
+          </Text>
+        </Pane>
+      </Pane>
+    </Pane>
   );
 };
 

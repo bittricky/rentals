@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
+import { Pane, Button, Menu, Popover, Avatar } from "evergreen-ui";
 
 import { LOG_OUT } from "../../../../graphql/mutations";
 import { LogOut as LogOutData } from "../../../../graphql/mutations/LogOut/__generated__/LogOut";
@@ -35,28 +36,41 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
 
   const subMenuLogin =
     viewer.id && viewer.avatar ? (
-      <div>
-        <ul>
-          <li>Profile</li>
-          <li>
-            <div onClick={handleLogOut}>Log Out</div>
-          </li>
-        </ul>
-      </div>
+      <Pane>
+        <Popover
+          content={
+            <Menu>
+              <Menu.Group>
+                <Menu.Item>Profile</Menu.Item>
+              </Menu.Group>
+              <Menu.Divider />
+              <Menu.Group>
+                <Menu.Item>
+                  <Button onClick={handleLogOut} appearance="minimal">
+                    Log Out
+                  </Button>
+                </Menu.Item>
+              </Menu.Group>
+            </Menu>
+          }
+        >
+          <Avatar src={viewer.avatar} />
+        </Popover>
+      </Pane>
     ) : (
-      <div>
-        <ul>
-          <Link to="/host">
-            <li>Host</li>
-          </Link>
-          <li>
-            <Link to="/login">
-              <button>Sign In</button>
-            </Link>
-          </li>
-        </ul>
-      </div>
+      <Pane>
+        <Link to="/login">
+          <Button appearance="primary">Sign In</Button>
+        </Link>
+      </Pane>
     );
 
-  return <div>{subMenuLogin}</div>;
+  return (
+    <Pane display="flex" alignItems="center">
+      <Pane>
+        <Link to="/host">Host</Link>
+      </Pane>
+      <Pane marginLeft={16}>{subMenuLogin}</Pane>
+    </Pane>
+  );
 };
