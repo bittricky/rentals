@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { Viewer } from "./graphql/lib/types";
 import {
+  Header,
   Home,
   Host,
   Listing,
@@ -33,6 +34,7 @@ const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
   return (
     <Router>
+      <Header viewer={viewer} setViewer={setViewer} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/host" element={<Host />} />
