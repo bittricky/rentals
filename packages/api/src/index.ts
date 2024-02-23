@@ -1,20 +1,19 @@
-import { config } from "dotenv";
-
-config();
-
 import express = require("express");
 import cookieParser = require("cookie-parser");
 
-import { Application } from "express";
+import { config } from "dotenv";
+config();
+
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./resolvers/typeDefs";
 
-const mount = async (app: Application) => {
+const mount = async () => {
+  const app = express();
   const db = await connectDatabase();
 
-  app.use(cookieParser(process.env.secret));
+  app.use(cookieParser(process.env.SECRET));
 
   const server = new ApolloServer({
     typeDefs,
@@ -22,12 +21,15 @@ const mount = async (app: Application) => {
     context: ({ req, res }) => ({ db, req, res }),
   });
 
-  server.start().then(() => {
-    server.applyMiddleware({ app, path: "/api" });
-    app.listen(process.env["PORT"]);
-  });
+  await server.start();
+  server.applyMiddleware({ app, path: "/api" });
 
-  console.log(`[app]: http://localhost:${process.env["PORT"]}`);
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`[app]: http://localhost:${PORT}${server.graphqlPath}`);
+  });
 };
 
-mount(express());
+mount().catch((error) => {
+  console.error("Application failed to start", error);
+});

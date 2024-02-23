@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { IResolvers } from "@graphql-tools/utils";
 import { Google } from "../../auth/Google";
 import { Viewer, Database, User } from "../../lib/types";
@@ -98,8 +98,7 @@ const loginViaCookie = async (
 ): Promise<User | undefined> => {
   const updateRes = await db.users.findOneAndUpdate(
     { _id: req.signedCookies.viewer },
-    { $set: { token } },
-    { returnOriginal: false }
+    { $set: { token } }
   );
 
   const viewer = updateRes.value;
@@ -108,7 +107,7 @@ const loginViaCookie = async (
     res.clearCookie("viewer", cookieOpts);
   }
 
-  return viewer;
+  return viewer as User;
 };
 
 export const viewerResolvers: IResolvers = {
