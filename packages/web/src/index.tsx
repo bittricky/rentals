@@ -1,7 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
+import { Pane, Spinner } from "evergreen-ui";
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  useMutation,
+} from "@apollo/client";
+import { LOG_IN } from "./graphql/mutations";
+import {
+  LogIn as LoginData,
+  LogInVariables,
+} from "./graphql/mutations/LogIn/__generated__/LogIn";
 import { Viewer } from "./graphql/lib/types";
 import {
   Header,
@@ -13,6 +25,7 @@ import {
   Listings,
   Login,
 } from "./sections";
+import { ErrorBanner, Skeleton } from "./components";
 import reportWebVitals from "./reportWebVitals";
 
 import "./styles/index.css";
@@ -32,8 +45,36 @@ const initialViewer: Viewer = {
 
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
+  const [logIn, { error }] = useMutation<LoginData, LogInVariables>(LOG_IN, {
+    onCompleted: (data) => {
+      if (data && data.logIn) {
+        setViewer(data.logIn);
+      }
+    },
+  });
+
+  const logInRef = useRef(logIn);
+
+  useEffect(() => {
+    logInRef.current();
+  });
+
+  if (!viewer.didRequest && !error) {
+    return (
+      <Pane>
+        <Skeleton />
+        <Spinner marginX="auto" marginY="auto" />
+      </Pane>
+    );
+  }
+
+  const logInErrorBannerElement = error ? (
+    <ErrorBanner description="We were not able to verify if you were logged in. Please try again later." />
+  ) : null;
+
   return (
     <Router>
+      {logInErrorBannerElement}
       <Header viewer={viewer} setViewer={setViewer} />
       <Routes>
         <Route path="/" element={<Home />} />
