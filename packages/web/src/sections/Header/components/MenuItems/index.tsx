@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { Pane, Button, Menu, Popover, Avatar } from "evergreen-ui";
+import { Pane, Button, Menu, Popover, Avatar, Text } from "evergreen-ui";
 
 import { LOG_OUT } from "../../../../graphql/mutations";
 import { LogOut as LogOutData } from "../../../../graphql/mutations/LogOut/__generated__/LogOut";
@@ -46,9 +46,7 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
               <Menu.Divider />
               <Menu.Group>
                 <Menu.Item>
-                  <Button onClick={handleLogOut} appearance="minimal">
-                    Log Out
-                  </Button>
+                  <Text onClick={handleLogOut}>Log Out</Text>
                 </Menu.Item>
               </Menu.Group>
             </Menu>
