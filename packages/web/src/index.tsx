@@ -59,14 +59,13 @@ const App = () => {
     logInRef.current();
   });
 
-  if (!viewer.didRequest && !error) {
-    return (
+  const skeletonLoading =
+    !viewer.didRequest && !error ? (
       <Pane>
         <Skeleton />
         <Spinner marginX="auto" marginY="auto" />
       </Pane>
-    );
-  }
+    ) : null;
 
   const logInErrorBannerElement = error ? (
     <ErrorBanner description="We were not able to verify if you were logged in. Please try again later." />
@@ -75,6 +74,7 @@ const App = () => {
   return (
     <Router>
       {logInErrorBannerElement}
+      {skeletonLoading}
       <Header viewer={viewer} setViewer={setViewer} />
       <Routes>
         <Route path="/" element={<Home />} />
