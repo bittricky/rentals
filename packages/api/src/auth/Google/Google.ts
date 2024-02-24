@@ -1,35 +1,52 @@
-import { google } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
+import { people_v1, google } from "googleapis";
 
-const auth = new google.auth.OAuth2(
+const oauth2Client = new OAuth2Client(
   process.env.G_CLIENT_ID,
   process.env.G_CLIENT_SECRET,
   `${process.env.PUBLIC_URL}/login`
 );
 
+const generateAuthUrl = () => {
+  const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+  ];
+
+  return oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    response_type: "code",
+    scope: scopes,
+  });
+};
+
 export const Google = {
-  authUrl: auth.generateAuthUrl({
-    access_type: "online",
-    scope: [
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile",
-    ],
-  }),
+  authUrl: generateAuthUrl(),
   logIn: logInHandler,
 };
 
 async function logInHandler(code: string) {
   try {
-    const { tokens } = await auth.getToken(code);
-    auth.setCredentials(tokens);
+    const { tokens } = await oauth2Client.getToken(code);
 
-    const { data } = await google.people({ version: "v1", auth }).people.get({
-      resourceName: "people/me",
-      personFields: "emailAddresses,names,photos",
-    });
+    oauth2Client.setCredentials(tokens);
 
-    return { user: data };
+    const user = await getUserProfile(oauth2Client);
+    console.log({ user });
+    return { user };
   } catch (error) {
-    console.error("Error logging in with Google:", error.message);
-    throw new Error("Failed to log in with Google: " + error.message);
+    throw new Error(error.message);
   }
+}
+
+async function getUserProfile(
+  auth: OAuth2Client
+): Promise<people_v1.Schema$Person> {
+  const peopleService = google.people({ version: "v1", auth });
+  const { data } = await peopleService.people.get({
+    resourceName: "people/me",
+    personFields: "emailAddresses,names,photos",
+  });
+
+  return data;
 }
