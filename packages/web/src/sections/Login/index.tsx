@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useApolloClient, useMutation } from "@apollo/client";
-import { Pane, Heading, Paragraph, Button, Text } from "evergreen-ui";
+import { Pane, Heading, Paragraph, Button, Text, Spinner } from "evergreen-ui";
 
 import { LOG_IN } from "../../graphql/mutations/LogIn";
 import { AUTH_URL } from "../../graphql/queries/AuthUrl";
@@ -19,22 +19,30 @@ interface Props {
 
 export const Login = ({ setViewer }: Props): JSX.Element => {
   const client = useApolloClient();
-  const [logIn, { data: logInData, loading: logInLoading, error: logInError }] =
-    useMutation<LoginData, LogInVariables>(LOG_IN, {
-      onCompleted: (data) => {
-        if (data && data.logIn) {
-          setViewer(data.logIn);
-          displaySuccessNotification("You've successfully logged in!");
-        }
-      },
-    });
+  const navigate = useNavigate();
+  const [logIn, { loading: logInLoading, error: logInError }] = useMutation<
+    LoginData,
+    LogInVariables
+  >(LOG_IN, {
+    onCompleted: (data) => {
+      if (data && data.logIn) {
+        setViewer(data.logIn);
+        displaySuccessNotification("You've successfully logged in!");
+        navigate(`/user/${data.logIn.id}`);
+      }
+    },
+  });
 
   const loginRef = useRef(logIn);
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
     if (code) {
-      loginRef.current({ variables: { input: { code } } });
+      loginRef.current({
+        variables: {
+          input: { code },
+        },
+      });
     }
   }, []);
 
@@ -54,13 +62,17 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
   };
 
   if (logInLoading) {
-    //TODO: add a loading component and call here
-    console.log("....loading");
-  }
-
-  if (logInData && logInData.logIn) {
-    const { id: viewerId } = logInData.logIn;
-    redirect(`/user/${viewerId}`);
+    return (
+      <Pane
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+        background="tint2"
+      >
+        <Spinner />
+      </Pane>
+    );
   }
 
   const loginErrorBanner = logInError ? (
@@ -87,8 +99,7 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
         {loginErrorBanner}
         <Heading size={600}>Login to your Rentals</Heading>
         <Paragraph marginTop={8}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod, quae
-          voluptatum. Quisquam, voluptate. Quisquam, voluptate.
+          Sign in with Google to book your rentals!
         </Paragraph>
         <Pane
           display="flex"
