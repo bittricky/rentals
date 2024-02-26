@@ -15,6 +15,7 @@ export const typeDefs = gql`
 
   type Query {
     authUrl: String!
+    isLoggedIn: Boolean!
   }
 
   type Mutation {

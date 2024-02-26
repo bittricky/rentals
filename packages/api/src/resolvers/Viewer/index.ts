@@ -5,13 +5,6 @@ import { Google } from "../../auth/Google";
 import { Viewer, Database, User } from "../../lib/types";
 import { LoginInArgs } from "./types";
 
-const cookieOpts = {
-  httpOnly: true,
-  sameSite: true,
-  signed: true,
-  secure: process.env.NODE_ENV === "development" ? false : true,
-};
-
 const logInViaGoogle = async (
   payload: any,
   db: Database,
@@ -56,42 +49,14 @@ const logInViaGoogle = async (
     viewer = updateRes.value;
   }
 
-  res.cookie("viewer", googleId, {
-    ...cookieOpts,
-    maxAge: 365 * 24 * 60 * 60 * 1000,
-  });
-
-  return viewer as User;
-};
-
-const loginViaCookie = async (
-  token: string,
-  db: Database,
-  req: Request,
-  res: Response
-): Promise<User | undefined> => {
-  const updateRes = await db.users.findOneAndUpdate(
-    { _id: req.signedCookies.viewer },
-    { $set: { token } }
-  );
-
-  const viewer = updateRes.value;
-
-  if (!viewer) {
-    res.clearCookie("viewer", cookieOpts);
-  }
-
   return viewer as User;
 };
 
 export const viewerResolvers: IResolvers = {
   Query: {
-    authUrl: () => {
-      try {
-        return "";
-      } catch (error) {
-        throw new Error(`Failed to query Google Auth Url: ${error}`);
-      }
+    //TODO: remove this AuthUrl
+    isLoggedIn: (_, args, { req }) => {
+      return req.session.id ? true : false;
     },
   },
   Mutation: {
@@ -102,12 +67,11 @@ export const viewerResolvers: IResolvers = {
     ): Promise<Viewer> => {
       try {
         const { idToken } = input;
-
+        //TODO: Integrate JWT web tokens for session
+        const token = crypto.randomBytes(16).toString("hex");
         const payload = await Google.verifyToken(idToken);
         //TODO: refactor cookie login for persistent login
         const viewer = await logInViaGoogle(payload, db, res);
-        //TODO: Integrate JWT web tokens for session
-        const token = crypto.randomBytes(16).toString("hex");
 
         if (!viewer) {
           return { didRequest: true };
@@ -127,10 +91,15 @@ export const viewerResolvers: IResolvers = {
     logOut: (
       _root: undefined,
       _args: object,
-      { res }: { res: Response }
+      { req, res }: { req: Request; res: Response }
     ): Viewer => {
       try {
-        res.clearCookie("viewer", cookieOpts);
+        req.session.destroy((err) => {
+          if (err) {
+            return false;
+          }
+          return true;
+        });
         return { didRequest: true };
       } catch (error) {
         throw new Error(`Failed to log out: ${error}`);

@@ -4,9 +4,9 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: AuthUrl
+// GraphQL query operation: isLoggedIn
 // ====================================================
 
-export interface AuthUrl {
-  authUrl: string;
+export interface isLoggedIn {
+  isLoggedIn: boolean;
 }

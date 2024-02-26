@@ -12,7 +12,7 @@ import {
 } from "@apollo/client";
 import { LOG_IN } from "./graphql/mutations";
 import {
-  LogIn as LoginData,
+  LogIn as LogInData,
   LogInVariables,
 } from "./graphql/mutations/LogIn/__generated__/LogIn";
 import { Viewer } from "./graphql/lib/types";
@@ -34,6 +34,7 @@ import "./styles/index.css";
 const client = new ApolloClient({
   uri: "/api",
   cache: new InMemoryCache(),
+  credentials: "include",
 });
 
 const initialViewer: Viewer = {
@@ -46,36 +47,9 @@ const initialViewer: Viewer = {
 
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
-  const [logIn, { error }] = useMutation<LoginData, LogInVariables>(LOG_IN, {
-    onCompleted: (data) => {
-      if (data && data.logIn) {
-        setViewer(data.logIn);
-      }
-    },
-  });
-
-  //TODO: causing an infinite loop - FIX
-  // const logInRef = useRef(logIn);
-
-  // useEffect(() => {
-  //   logInRef.current();
-  // });
-
-  const skeletonLoading =
-    !viewer.didRequest && !error ? (
-      <Pane>
-        <Skeleton />
-        <Spinner marginX="auto" marginY="auto" />
-      </Pane>
-    ) : null;
-
-  const logInErrorBannerElement = error ? (
-    <ErrorBanner description="We were not able to verify if you were logged in. Please try again later." />
-  ) : null;
 
   return (
     <Router>
-      {logInErrorBannerElement}
       <Header viewer={viewer} setViewer={setViewer} />
       <Routes>
         <Route path="/" element={<Home />} />
