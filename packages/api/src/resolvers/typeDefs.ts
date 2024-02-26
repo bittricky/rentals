@@ -10,7 +10,7 @@ export const typeDefs = gql`
   }
 
   input LoginInput {
-    code: String!
+    idToken: String!
   }
 
   type Query {

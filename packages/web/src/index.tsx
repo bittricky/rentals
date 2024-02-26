@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 import { Pane, Spinner } from "evergreen-ui";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -53,11 +54,12 @@ const App = () => {
     },
   });
 
-  const logInRef = useRef(logIn);
+  //TODO: causing an infinite loop - FIX
+  // const logInRef = useRef(logIn);
 
-  useEffect(() => {
-    logInRef.current();
-  });
+  // useEffect(() => {
+  //   logInRef.current();
+  // });
 
   const skeletonLoading =
     !viewer.didRequest && !error ? (
@@ -74,7 +76,6 @@ const App = () => {
   return (
     <Router>
       {logInErrorBannerElement}
-      {skeletonLoading}
       <Header viewer={viewer} setViewer={setViewer} />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -92,11 +93,16 @@ const App = () => {
   );
 };
 
+const clientId = process.env.REACT_APP_G_CLIENT_ID;
+
 render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    {/*TODO: store this in an environment variable */}
+    <GoogleOAuthProvider clientId={clientId as string}>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </GoogleOAuthProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -13,76 +13,50 @@ const cookieOpts = {
 };
 
 const logInViaGoogle = async (
-  code: string,
-  token: string,
+  payload: any,
   db: Database,
   res: Response
 ): Promise<User | undefined> => {
-  const { user } = await Google.logIn(code);
-
-  if (!user) {
+  const googleId = payload["sub"]; // Google's unique ID for the user
+  const userName = payload["name"];
+  const userEmail = payload["email"];
+  const userAvatar = payload["picture"];
+  if (!googleId || !userName || !userAvatar || !userEmail) {
     throw new Error("Google login error");
   }
-
-  // Names/Photos/Email Lists
-  const userNamesList = user.names && user.names.length ? user.names : null;
-  const userPhotosList = user.photos && user.photos.length ? user.photos : null;
-  const userEmailsList =
-    user.emailAddresses && user.emailAddresses.length
-      ? user.emailAddresses
-      : null;
-
-  // User Display Name
-  const userName = userNamesList ? userNamesList[0].displayName : null;
-
-  // User Id
-  const userId =
-    userNamesList &&
-    userNamesList[0].metadata &&
-    userNamesList[0].metadata.source
-      ? userNamesList[0].metadata.source.id
-      : null;
-
-  // User Avatar
-  const userAvatar =
-    userPhotosList && userPhotosList[0].url ? userPhotosList[0].url : null;
-
-  // User Email
-  const userEmail =
-    userEmailsList && userEmailsList[0].value ? userEmailsList[0].value : null;
-
-  if (!userId || !userName || !userAvatar || !userEmail) {
-    throw new Error("Google login error");
-  }
-
-  const updateRes = await db.users.findOneAndUpdate(
-    { _id: userId },
-    {
-      $set: {
-        name: userName,
-        avatar: userAvatar,
-        contact: userEmail,
-        token,
-      },
-    }
-  );
-
-  const viewer = updateRes.value;
+  let viewer = await db.users.findOne({ _id: googleId });
 
   if (!viewer) {
-    await db.users.insertOne({
-      _id: userId,
-      token,
+    const insertRes = await db.users.insertOne({
+      _id: googleId,
       name: userName,
       avatar: userAvatar,
       contact: userEmail,
-      income: 0,
+      token: payload,
       bookings: [],
+      income: 0,
       listings: [],
     });
+
+    viewer = await db.users.findOne({ _id: insertRes.insertedId });
+  } else {
+    const updateRes = await db.users.findOneAndUpdate(
+      { _id: googleId },
+      {
+        $set: {
+          name: userName,
+          avatar: userAvatar,
+          contact: userEmail,
+          token: payload,
+        },
+      },
+      { returnDocument: "after" }
+    );
+
+    viewer = updateRes.value;
   }
 
-  res.cookie("viewer", userId, {
+  res.cookie("viewer", googleId, {
     ...cookieOpts,
     maxAge: 365 * 24 * 60 * 60 * 1000,
   });
@@ -114,7 +88,7 @@ export const viewerResolvers: IResolvers = {
   Query: {
     authUrl: () => {
       try {
-        return Google.authUrl;
+        return "";
       } catch (error) {
         throw new Error(`Failed to query Google Auth Url: ${error}`);
       }
@@ -127,22 +101,23 @@ export const viewerResolvers: IResolvers = {
       { db, req, res }: { db: Database; req: Request; res: Response }
     ): Promise<Viewer> => {
       try {
-        const code = input ? input.code : null;
-        const token = crypto.randomBytes(16).toString("hex");
+        const { idToken } = input;
 
-        const viewer: User | undefined = code
-          ? await logInViaGoogle(code, token, db, res)
-          : await loginViaCookie(token, db, req, res);
+        const payload = await Google.verifyToken(idToken);
+        //TODO: refactor cookie login for persistent login
+        const viewer = await logInViaGoogle(payload, db, res);
+        //TODO: Integrate JWT web tokens for session
+        const token = crypto.randomBytes(16).toString("hex");
 
         if (!viewer) {
           return { didRequest: true };
         }
 
         return {
-          _id: viewer._id,
-          token: viewer.token,
-          avatar: viewer.avatar,
-          walletId: viewer.walletId,
+          _id: viewer?._id,
+          token,
+          avatar: viewer?.avatar,
+          walletId: viewer?.walletId,
           didRequest: true,
         };
       } catch (error) {
