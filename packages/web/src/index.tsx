@@ -59,8 +59,21 @@ const App = () => {
     }
   }, [data]);
 
-  //TODO: build out spinner state with the empty skeleton component
-  if (loading) return <Spinner />;
+  if (loading) {
+    return (
+      <Pane>
+        <Skeleton />
+        <Pane
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh"
+        >
+          <Spinner />
+        </Pane>
+      </Pane>
+    );
+  }
 
   if (error)
     return (

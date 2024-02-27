@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Pane, Heading } from "evergreen-ui";
 
 export const Skeleton = () => {
@@ -10,9 +9,7 @@ export const Skeleton = () => {
       padding={16}
       borderBottom
     >
-      <Link to="/">
-        <Heading size={600}>Logo</Heading>
-      </Link>
+      <Heading size={600}>Logo</Heading>
     </Pane>
   );
 };
