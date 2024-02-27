@@ -65,7 +65,6 @@ const App = () => {
     if (data && data.isLoggedIn) {
       const { id, token, avatar, hasWallet } = data.isLoggedIn;
 
-      sessionStorage.setItem("token", token);
       setViewer({
         id,
         token,
@@ -73,6 +72,12 @@ const App = () => {
         hasWallet,
         didRequest: true,
       });
+
+      if (token) {
+        sessionStorage.setItem("token", token);
+      } else {
+        sessionStorage.removeItem("token");
+      }
     }
   }, [data]);
 
