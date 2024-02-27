@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
 import { Pane, Spinner } from "evergreen-ui";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -8,13 +8,9 @@ import {
   ApolloClient,
   ApolloProvider,
   InMemoryCache,
-  useMutation,
+  useQuery,
 } from "@apollo/client";
-import { LOG_IN } from "./graphql/mutations";
-import {
-  LogIn as LogInData,
-  LogInVariables,
-} from "./graphql/mutations/LogIn/__generated__/LogIn";
+import { IS_LOGGED_IN } from "./graphql/queries";
 import { Viewer } from "./graphql/lib/types";
 import {
   Header,
@@ -47,6 +43,29 @@ const initialViewer: Viewer = {
 
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
+  const { data, loading, error } = useQuery(IS_LOGGED_IN);
+
+  useEffect(() => {
+    if (data && data.isLoggedIn) {
+      const { id, token, avatar, hasWallet } = data.isLoggedIn;
+
+      setViewer({
+        id,
+        token,
+        avatar,
+        hasWallet,
+        didRequest: true,
+      });
+    }
+  }, [data]);
+
+  //TODO: build out spinner state with the empty skeleton component
+  if (loading) return <Spinner />;
+
+  if (error)
+    return (
+      <ErrorBanner description="We weren't able to verify if you were logged in. Please try again later!" />
+    );
 
   return (
     <Router>
@@ -71,7 +90,6 @@ const clientId = process.env.REACT_APP_G_CLIENT_ID;
 
 render(
   <React.StrictMode>
-    {/*TODO: store this in an environment variable */}
     <GoogleOAuthProvider clientId={clientId as string}>
       <ApolloProvider client={client}>
         <App />
@@ -81,7 +99,4 @@ render(
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

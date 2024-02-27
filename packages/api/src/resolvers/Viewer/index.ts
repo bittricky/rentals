@@ -54,9 +54,24 @@ const logInViaGoogle = async (
 
 export const viewerResolvers: IResolvers = {
   Query: {
-    //TODO: remove this AuthUrl
-    isLoggedIn: (_, args, { req }) => {
-      return req.session.id ? true : false;
+    isLoggedIn: async (_, args, { req, db }) => {
+      if (!req.session.userId || !req.session.token) {
+        return false;
+      }
+
+      const user = await db.users.findOne({ _id: req.session.userId });
+
+      if (!user) {
+        return false;
+      }
+
+      return {
+        _id: user._id,
+        token: req.session.token, //TODO: find a better way to handle this
+        avatar: user.avatar,
+        hasWallet: user.hasWallet,
+        didRequest: true,
+      };
     },
   },
   Mutation: {
@@ -70,18 +85,26 @@ export const viewerResolvers: IResolvers = {
         //TODO: Integrate JWT web tokens for session
         const token = crypto.randomBytes(16).toString("hex");
         const payload = await Google.verifyToken(idToken);
-        //TODO: refactor cookie login for persistent login
+
         const viewer = await logInViaGoogle(payload, db, res);
 
         if (!viewer) {
           return { didRequest: true };
         }
 
+        req.session.userId = viewer._id;
+        req.session.token = token;
+        req.session.isLoggedIn = true;
+
+        req.session.regenerate((err) => {
+          if (err) throw new Error("Session regeneration failed");
+        });
+
         return {
-          _id: viewer?._id,
+          _id: viewer._id,
           token,
-          avatar: viewer?.avatar,
-          walletId: viewer?.walletId,
+          avatar: viewer.avatar,
+          walletId: viewer.walletId,
           didRequest: true,
         };
       } catch (error) {
