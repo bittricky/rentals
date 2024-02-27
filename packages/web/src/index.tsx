@@ -9,7 +9,9 @@ import {
   ApolloProvider,
   InMemoryCache,
   useQuery,
+  HttpLink,
 } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import { IS_LOGGED_IN } from "./graphql/queries";
 import { Viewer } from "./graphql/lib/types";
 import {
@@ -27,10 +29,24 @@ import reportWebVitals from "./reportWebVitals";
 
 import "./styles/index.css";
 
-const client = new ApolloClient({
+const authLink = setContext((_, { headers }) => {
+  const token = sessionStorage.getItem("token");
+  return {
+    ...headers,
+    "X-CSRF-Token": token || "",
+  };
+});
+
+const httpLink = new HttpLink({
   uri: "/api",
-  cache: new InMemoryCache(),
   credentials: "include",
+});
+
+const link = authLink.concat(httpLink);
+
+const client = new ApolloClient({
+  link,
+  cache: new InMemoryCache(),
 });
 
 const initialViewer: Viewer = {
@@ -49,6 +65,7 @@ const App = () => {
     if (data && data.isLoggedIn) {
       const { id, token, avatar, hasWallet } = data.isLoggedIn;
 
+      sessionStorage.setItem("token", token);
       setViewer({
         id,
         token,

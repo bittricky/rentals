@@ -25,6 +25,7 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
     onCompleted: (data) => {
       if (data && data.logIn) {
         setViewer(data.logIn);
+        sessionStorage.setItem("token", data.logIn.token as string);
         displaySuccessNotification("You've successfully logged in!");
         navigate(`/user/${data.logIn.id}`);
       }
