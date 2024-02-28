@@ -49,6 +49,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+//TODO: remove the use of non auth tokens being sent from the server to the client
 const initialViewer: Viewer = {
   id: null,
   token: null,
