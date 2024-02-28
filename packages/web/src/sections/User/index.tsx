@@ -10,7 +10,7 @@ import {
 } from "../../graphql/queries/User/__generated__/User";
 import { Viewer } from "../../graphql/lib/types";
 
-import { ErrorBanner, Skeleton } from "../../components";}
+import { ErrorBanner, Skeleton } from "../../components";
 import { UserProfile } from "./components";
 
 interface Props {
@@ -31,7 +31,7 @@ export const User = ({ viewer }: Props) => {
       <Pane>
         <Skeleton />
       </Pane>
-    )
+    );
   }
 
   if (error) {
@@ -40,7 +40,7 @@ export const User = ({ viewer }: Props) => {
         <ErrorBanner description="This user may not exist or we've encountered an error. Please try again soon." />
         <Skeleton />
       </Pane>
-    )
+    );
   }
 
   const user = data ? data.user : null;
