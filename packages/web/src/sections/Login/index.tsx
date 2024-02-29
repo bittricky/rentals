@@ -1,8 +1,7 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { GoogleLogin } from "@react-oauth/google";
-import { Pane, Heading, Paragraph, Spinner } from "evergreen-ui";
+import { Flex, Heading, Stack, Text, Spinner, Box } from "@chakra-ui/react";
 
 import { LOG_IN } from "../../graphql/mutations/LogIn";
 import {
@@ -51,14 +50,9 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
 
   if (logInLoading) {
     return (
-      <Pane
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        height="100vh"
-      >
+      <Box>
         <Spinner />
-      </Pane>
+      </Box>
     );
   }
 
@@ -67,25 +61,24 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
   ) : null;
 
   return (
-    <Pane
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-    >
-      <Pane
-        width={400}
-        textAlign="center"
-        padding={24}
-        borderRadius={8}
-        border="default"
-        elevation={2}
+    <Flex minH={"100vh"} align={"center"} justify={"center"}>
+      <Stack
+        spacing={4}
+        w={"full"}
+        maxW={"md"}
+        rounded={"xl"}
+        boxShadow={"lg"}
+        p={6}
+        my={12}
       >
         {loginErrorBanner}
-        <Heading size={600}>Login to your Rentals</Heading>
-        <Paragraph marginTop={8}>
+        <Heading fontSize={{ base: "2xl", md: "3xl" }}>
+          Login to your Rentals
+        </Heading>
+        <Text marginTop={8}>
           Sign in with Google to start booking your rentals!
-        </Paragraph>
+        </Text>
+        {/* TODO: customize Google SSO Button */}
         <GoogleLogin
           onSuccess={handleLogin}
           onError={() =>
@@ -94,8 +87,8 @@ export const Login = ({ setViewer }: Props): JSX.Element => {
             )
           }
         />
-      </Pane>
-    </Pane>
+      </Stack>
+    </Flex>
   );
 };
 

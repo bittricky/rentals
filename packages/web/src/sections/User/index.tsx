@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { Pane } from "evergreen-ui";
+import { Box } from "@chakra-ui/react";
 
 import { USER } from "../../graphql/queries";
 import {
@@ -28,18 +28,18 @@ export const User = ({ viewer }: Props) => {
 
   if (loading) {
     return (
-      <Pane>
+      <Box>
         <Skeleton />
-      </Pane>
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <Pane>
+      <Box>
         <ErrorBanner description="This user may not exist or we've encountered an error. Please try again soon." />
         <Skeleton />
-      </Pane>
+      </Box>
     );
   }
 
@@ -50,9 +50,9 @@ export const User = ({ viewer }: Props) => {
   ) : null;
 
   return (
-    <Pane>
-      <Pane>{userProfileElement}</Pane>
-    </Pane>
+    <Box>
+      <Box>{userProfileElement}</Box>
+    </Box>
   );
 };
 

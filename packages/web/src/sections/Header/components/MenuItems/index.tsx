@@ -1,7 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { Pane, Button, Menu, Popover, Avatar, Text } from "evergreen-ui";
+import {
+  Avatar,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  Center,
+  Stack,
+  Box,
+} from "@chakra-ui/react";
 
 import { LOG_OUT } from "../../../../graphql/mutations";
 import { LogOut as LogOutData } from "../../../../graphql/mutations/LogOut/__generated__/LogOut";
@@ -37,39 +48,47 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
 
   const subMenuLogin =
     viewer.id && viewer.avatar ? (
-      <Pane>
-        <Popover
-          content={
-            <Menu>
-              <Menu.Group>
-                <Menu.Item>Profile</Menu.Item>
-              </Menu.Group>
-              <Menu.Divider />
-              <Menu.Group>
-                <Menu.Item>
-                  <Text onClick={handleLogOut}>Log Out</Text>
-                </Menu.Item>
-              </Menu.Group>
-            </Menu>
-          }
-        >
-          <Avatar src={viewer.avatar} />
-        </Popover>
-      </Pane>
+      <Box>
+        <Menu>
+          <MenuButton
+            as={Button}
+            rounded={"full"}
+            variant={"link"}
+            cursor={"pointer"}
+            minW={0}
+          >
+            <Avatar size={"sm"} src={viewer.avatar} />
+          </MenuButton>
+          <MenuList alignItems={"center"}>
+            <br />
+            <Center>
+              <Avatar
+                size={"2xl"}
+                src={"https://avatars.dicebear.com/api/male/username.svg"}
+              />
+            </Center>
+            <MenuDivider />
+            <MenuItem>Profile</MenuItem>
+            <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+          </MenuList>
+        </Menu>
+      </Box>
     ) : (
-      <Pane>
+      <Box>
         <Link to="/login">
-          <Button appearance="primary">Sign In</Button>
+          <Button colorScheme="purple" variant="ghost">
+            Sign In
+          </Button>
         </Link>
-      </Pane>
+      </Box>
     );
 
   return (
-    <Pane display="flex" alignItems="center">
-      <Pane>
-        <Link to="/host">Host</Link>
-      </Pane>
-      <Pane marginLeft={16}>{subMenuLogin}</Pane>
-    </Pane>
+    <Stack direction={"row"} spacing={7}>
+      <Link to="/host">Host</Link>
+      {subMenuLogin}
+    </Stack>
   );
 };
+
+MenuItems.displayName = "MenuItems";

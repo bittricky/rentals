@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
-import { Pane, Spinner } from "evergreen-ui";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ChakraProvider, Box, Spinner } from "@chakra-ui/react";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -26,8 +26,6 @@ import {
 } from "./sections";
 import { ErrorBanner, Skeleton } from "./components";
 import reportWebVitals from "./reportWebVitals";
-
-import "./styles/index.css";
 
 const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem("token");
@@ -84,17 +82,12 @@ const App = () => {
 
   if (loading) {
     return (
-      <Pane>
+      <Box>
         <Skeleton />
-        <Pane
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          height="100vh"
-        >
+        <Box>
           <Spinner />
-        </Pane>
-      </Pane>
+        </Box>
+      </Box>
     );
   }
 
@@ -129,11 +122,13 @@ const clientId = process.env.REACT_APP_G_CLIENT_ID;
 
 render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={clientId as string}>
-      <ApolloProvider client={client}>
-        <App />
-      </ApolloProvider>
-    </GoogleOAuthProvider>
+    <ChakraProvider>
+      <GoogleOAuthProvider clientId={clientId as string}>
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
+      </GoogleOAuthProvider>
+    </ChakraProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

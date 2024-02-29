@@ -1,5 +1,11 @@
 import React from "react";
-import { Pane, Alert } from "evergreen-ui";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Stack,
+} from "@chakra-ui/react";
 
 interface Props {
   message?: string;
@@ -12,10 +18,14 @@ export const ErrorBanner = (props: Props) => {
     description = "Looks like something went wrong. Please check your connection and/or try again soon.",
   } = props;
   return (
-    <Pane>
-      <Alert intent="danger" title={message} marginBottom={32}>
-        {description}
+    <Stack spacing={3}>
+      <Alert status="error">
+        <AlertIcon />
+        <AlertTitle>{message}</AlertTitle>
+        <AlertDescription>{description}</AlertDescription>
       </Alert>
-    </Pane>
+    </Stack>
   );
 };
+
+ErrorBanner.displayName = "ErrorBanner";

@@ -1,10 +1,23 @@
-import { toaster } from "evergreen-ui";
+import { createStandaloneToast } from "@chakra-ui/react";
 
-//TODO: Add notification functionality
+const { toast } = createStandaloneToast();
+//TODO: refactor to keep DRY
 export const displaySuccessNotification = (message: string) => {
-  return toaster.success(message);
+  return toast({
+    title: message,
+    status: "success",
+    duration: 5000,
+    isClosable: true,
+    position: "top",
+  });
 };
-//TODO: display the error messafe
-export const displayErrorMessage = (error: string) => {
-  return toaster.warning(error);
+
+export const displayErrorMessage = (message: string) => {
+  return toast({
+    title: message,
+    status: "error",
+    duration: 5000,
+    isClosable: true,
+    position: "top",
+  });
 };

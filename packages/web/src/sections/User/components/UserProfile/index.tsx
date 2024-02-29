@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Pane, Avatar, Text, Heading, Button } from "evergreen-ui";
+import { Box, Avatar, Text, Heading, Button } from "@chakra-ui/react";
 import { User as UserData } from "../../../../graphql/queries/User/__generated__/User";
 
 interface Props {
@@ -10,28 +10,28 @@ interface Props {
 export const UserProfile = ({ user, viewerIsUser }: Props) => {
   const additionalDetails = viewerIsUser ? (
     <Fragment>
-      <Pane>
+      <Box>
         <Heading>Additional Details</Heading>
         <Text>Interested in becoming a host? Register with Stripe!</Text>
-        <Button appearance="primary">Connect with Stripe</Button>
-      </Pane>
+        <Button colorScheme="purple">Connect with Stripe</Button>
+      </Box>
     </Fragment>
   ) : null;
 
   return (
-    <Pane>
-      <Pane>
-        <Avatar src={user.avatar} name={user.name} size={40} />
-      </Pane>
-      <Pane>
-        <Pane>
+    <Box>
+      <Box>
+        <Avatar src={user.avatar} name={user.name} />
+      </Box>
+      <Box>
+        <Box>
           <Heading>Details</Heading>
           <Text>Name: {user.name}</Text>
           <Text>Contact: {user.contact}</Text>
-        </Pane>
-      </Pane>
-      <Pane>{additionalDetails}</Pane>
-    </Pane>
+        </Box>
+      </Box>
+      <Box>{additionalDetails}</Box>
+    </Box>
   );
 };
 
