@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import {
   Avatar,
@@ -12,6 +12,8 @@ import {
   Center,
   Stack,
   Box,
+  Text,
+  Link,
 } from "@chakra-ui/react";
 
 import { LOG_OUT } from "../../../../graphql/mutations";
@@ -75,7 +77,7 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
       </Box>
     ) : (
       <Box>
-        <Link to="/login">
+        <Link as={RouterLink} to="/login" _hover={{ textDecor: "none" }}>
           <Button colorScheme="purple" variant="ghost">
             Sign In
           </Button>
@@ -84,8 +86,10 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
     );
 
   return (
-    <Stack direction={"row"} spacing={7}>
-      <Link to="/host">Host</Link>
+    <Stack direction={"row"} spacing={7} align="center">
+      <Link as={RouterLink} to="/host" _hover={{ textDecor: "none" }}>
+        <Text fontSize="md">Host</Text>
+      </Link>
       {subMenuLogin}
     </Stack>
   );
