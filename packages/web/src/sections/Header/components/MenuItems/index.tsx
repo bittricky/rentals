@@ -9,7 +9,6 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
-  Center,
   Stack,
   Box,
   Text,
@@ -62,15 +61,16 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
             <Avatar size={"sm"} src={viewer.avatar} />
           </MenuButton>
           <MenuList alignItems={"center"}>
-            <br />
-            <Center>
-              <Avatar
-                size={"2xl"}
-                src={"https://avatars.dicebear.com/api/male/username.svg"}
-              />
-            </Center>
+            <MenuItem>
+              <Link
+                as={RouterLink}
+                to={`/user/${viewer.id}`}
+                style={{ width: "100%" }}
+              >
+                Profile
+              </Link>
+            </MenuItem>
             <MenuDivider />
-            <MenuItem>Profile</MenuItem>
             <MenuItem onClick={handleLogOut}>Logout</MenuItem>
           </MenuList>
         </Menu>
