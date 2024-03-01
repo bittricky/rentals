@@ -19,13 +19,15 @@ export const UserProfile = ({ user, viewerIsUser }: Props) => {
   const cardBg = useColorModeValue("white", "gray.800");
 
   const additionalDetails = viewerIsUser ? (
-    <Box bg={cardBg}>
-      <Heading size="md" mb={2}>
-        Additional Details
-      </Heading>
-      <Text mb={4}>Interested in becoming a host? Register with Stripe!</Text>
-      <Button colorScheme="purple">Connect with Stripe</Button>
-    </Box>
+    <Fragment>
+      <Box bg={cardBg}>
+        <Heading size="md" mb={2}>
+          Additional Details
+        </Heading>
+        <Text mb={4}>Interested in becoming a host? Register with Stripe!</Text>
+        <Button colorScheme="purple">Connect with Stripe</Button>
+      </Box>
+    </Fragment>
   ) : null;
 
   return (

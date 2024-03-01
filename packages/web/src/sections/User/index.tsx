@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { Box } from "@chakra-ui/react";
@@ -11,18 +11,25 @@ import {
 import { Viewer } from "../../graphql/lib/types";
 
 import { ErrorBanner, Skeleton } from "../../components";
-import { UserProfile } from "./components";
+import { UserProfile, UserBookings, UserListings } from "./components";
 
 interface Props {
   viewer: Viewer;
 }
 
+const PAGE_LIMIT = 4;
+
 export const User = ({ viewer }: Props) => {
   const { id: userId } = useParams();
+  const [listingsPage, setListingsPage] = useState(1);
+  const [bookingsPage, setBookingsPage] = useState(1);
 
   const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
     variables: {
       id: userId as string,
+      bookingsPage,
+      listingsPage,
+      limit: PAGE_LIMIT,
     },
   });
 
@@ -33,25 +40,46 @@ export const User = ({ viewer }: Props) => {
       </Box>
     );
   }
-
+  console.log("error: ", error);
   if (error) {
     return (
       <Box>
         <ErrorBanner description="This user may not exist or we've encountered an error. Please try again soon." />
-        <Skeleton />
       </Box>
     );
   }
 
   const user = data ? data.user : null;
+  const userListings = user ? user.listings : null;
+  const userBookings = user ? user.bookings : null;
   const viewerIsUser = viewer.id === userId;
   const userProfileElement = user ? (
     <UserProfile user={user} viewerIsUser={viewerIsUser} />
   ) : null;
 
+  const userListingsElement = userListings ? (
+    <UserListings
+      userListings={userListings}
+      listingsPage={listingsPage}
+      limit={PAGE_LIMIT}
+      setListingsPage={setListingsPage}
+    />
+  ) : null;
+
+  const userBookingsElement = userBookings ? (
+    <UserBookings
+      userBookings={userBookings}
+      bookingsPage={bookingsPage}
+      limit={PAGE_LIMIT}
+      setBookingsPage={setBookingsPage}
+    />
+  ) : null;
+
   return (
     <Box>
       <Box>{userProfileElement}</Box>
+      <Box>{userListingsElement}</Box>
+      <Box>{userBookingsElement}</Box>
     </Box>
   );
 };

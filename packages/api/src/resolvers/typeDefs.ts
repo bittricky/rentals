@@ -45,7 +45,7 @@ export const typeDefs = gql`
     contact: String!
     hasWallet: Boolean!
     income: Int
-    bookings(limit: Int!, page: Int!): Bookings
+    bookings(limit: Int!, page: Int!): Bookings!
     listings(limit: Int!, page: Int!): Listings!
   }
 
