@@ -7,6 +7,7 @@ import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./resolvers/typeDefs";
+import { authorize } from "./lib/utils";
 
 const mount = async () => {
   const app = express();
@@ -30,7 +31,10 @@ const mount = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req, res }) => ({ db, req, res }),
+    context: async ({ req, res }) => {
+      const viewer = await authorize(db, req);
+      return { db, req, res, viewer };
+    },
   });
 
   await server.start();

@@ -1,7 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { Request } from "express";
-import { Database, User } from "../../lib/types";
-import { authorize } from "../../lib/utils";
+import { Database, User, Viewer } from "../../lib/types";
 import {
   UserArgs,
   UserBookingsArgs,
@@ -24,12 +23,6 @@ export const userResolvers: IResolvers = {
           throw new Error("user was not found");
         }
 
-        const viewer = await authorize(db, req);
-
-        if (viewer && viewer._id === user._id) {
-          user.authorized = true;
-        }
-
         return user;
       } catch (error) {
         throw new Error(`Failed to query user: ${error}`);
@@ -49,10 +42,10 @@ export const userResolvers: IResolvers = {
     bookings: async (
       user: User,
       { limit, page }: UserBookingsArgs,
-      { db }: { db: Database }
+      { db, viewer }: { db: Database; viewer: Viewer }
     ): Promise<UserBookingsData | null> => {
       try {
-        if (!user.authorized) {
+        if (viewer._id !== user._id) {
           return null;
         }
 
@@ -82,10 +75,10 @@ export const userResolvers: IResolvers = {
     listings: async (
       user: User,
       { limit, page }: UserListingsArgs,
-      { db }: { db: Database }
+      { db, viewer }: { db: Database; viewer: Viewer }
     ): Promise<UserListingsData | null> => {
       try {
-        if (!user.authorized) {
+        if (viewer._id !== user._id) {
           return null;
         }
 

@@ -71,12 +71,6 @@ const App = () => {
         hasWallet,
         didRequest: true,
       });
-
-      if (token) {
-        sessionStorage.setItem("token", token);
-      } else {
-        sessionStorage.removeItem("token");
-      }
     }
   }, [data]);
 

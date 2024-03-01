@@ -8,7 +8,8 @@ import { LoginInArgs } from "./types";
 const logInViaGoogle = async (
   payload: any,
   db: Database,
-  res: Response
+  res: Response,
+  token: string
 ): Promise<User | undefined> => {
   const googleId = payload["sub"]; // Google's unique ID for the user
   const userName = payload["name"];
@@ -25,7 +26,7 @@ const logInViaGoogle = async (
       name: userName,
       avatar: userAvatar,
       contact: userEmail,
-      token: payload,
+      token,
       bookings: [],
       income: 0,
       listings: [],
@@ -40,7 +41,7 @@ const logInViaGoogle = async (
           name: userName,
           avatar: userAvatar,
           contact: userEmail,
-          token: payload,
+          token,
         },
       },
       { returnDocument: "after" }
@@ -67,7 +68,7 @@ export const viewerResolvers: IResolvers = {
 
       return {
         _id: user._id,
-        token: req.session.token, //TODO: find a better way to handle this
+        token: user.token,
         avatar: user.avatar,
         hasWallet: user.hasWallet,
         didRequest: true,
@@ -86,7 +87,9 @@ export const viewerResolvers: IResolvers = {
         const token = crypto.randomBytes(16).toString("hex");
         const payload = await Google.verifyToken(idToken);
 
-        const viewer = await logInViaGoogle(payload, db, res);
+        const viewer = payload
+          ? await logInViaGoogle(payload, db, res, token)
+          : null;
 
         if (!viewer) {
           return { didRequest: true };

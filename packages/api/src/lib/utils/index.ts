@@ -5,13 +5,25 @@ export const authorize = async (
   db: Database,
   req: Request
 ): Promise<User | null> => {
-  const token = req.get("X-CSRF-TOKEN");
+  const csrfToken = req.headers["x-csrf-token"];
+
   const sessionId = req.sessionID;
 
-  const viewer = await db.users.findOne({
-    _id: sessionId,
-    token,
-  });
+  if (!csrfToken) {
+    console.log("Missing CSRF token");
+    return null;
+  }
 
-  return viewer;
+  if (!sessionId) {
+    console.log("Missing Session ID");
+  }
+
+  const user = await db.users.findOne({ sessionID: sessionId });
+
+  if (user && req.session.token === user.token) {
+    return user;
+  } else {
+    console.log("Session token mismatch or user not found");
+    return null;
+  }
 };
