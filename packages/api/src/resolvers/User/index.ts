@@ -37,6 +37,7 @@ export const userResolvers: IResolvers = {
       return Boolean(user.walletId);
     },
     income: (user: User): number | null => {
+      //TODO: fix authorization
       return user.authorized ? user.income : null;
     },
     bookings: async (

@@ -31,7 +31,7 @@ const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem("token");
   return {
     ...headers,
-    "X-CSRF-Token": token || "",
+    authorization: token ? `Bearer ${token}` : "",
   };
 });
 

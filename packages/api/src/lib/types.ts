@@ -52,7 +52,6 @@ export interface Listing {
 
 export interface User {
   _id: string;
-  token: string;
   name: string;
   avatar: string;
   contact: string;

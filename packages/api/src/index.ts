@@ -1,4 +1,5 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 config();
 
@@ -7,7 +8,8 @@ import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./resolvers/typeDefs";
-import { authorize } from "./lib/utils";
+
+const JWT_SECRET = process.env.SECRET as string;
 
 const mount = async () => {
   const app = express();
@@ -16,7 +18,7 @@ const mount = async () => {
   app.use(
     session({
       name: "sid",
-      secret: process.env.SECRET as string,
+      secret: JWT_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -28,12 +30,32 @@ const mount = async () => {
     })
   );
 
+  app.use(async (req, _, next) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const token = authHeader.replace("Bearer ", "");
+      try {
+        const userId = jwt.verify(token, JWT_SECRET);
+
+        const user = await db.users.findOne({ _id: userId });
+
+        if (user) {
+          req.session.userId = user._id.toString();
+        } else {
+          throw new Error("No User was found");
+        }
+      } catch (err) {
+        console.log("Invalid token: ", err);
+      }
+    }
+    next();
+  });
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: async ({ req, res }) => {
-      const viewer = await authorize(db, req);
-      return { db, req, res, viewer };
+      return { db, req, res };
     },
   });
 
