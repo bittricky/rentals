@@ -40,7 +40,7 @@ export const User = ({ viewer }: Props) => {
       </Box>
     );
   }
-  console.log("error: ", error);
+
   if (error) {
     return (
       <Box>
