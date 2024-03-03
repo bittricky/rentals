@@ -35,9 +35,9 @@ const mount = async () => {
     if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
       try {
-        const userId = jwt.verify(token, JWT_SECRET);
+        const decoded: any = jwt.verify(token, JWT_SECRET);
 
-        const user = await db.users.findOne({ _id: userId });
+        const user = await db.users.findOne({ _id: decoded?.userId });
 
         if (user) {
           req.session.userId = user._id.toString();
