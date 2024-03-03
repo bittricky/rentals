@@ -1,5 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { Request } from "express";
+import { authorize } from "../../lib/utils";
 import { Database, User, Viewer } from "../../lib/types";
 import {
   UserArgs,
@@ -43,10 +44,13 @@ export const userResolvers: IResolvers = {
     bookings: async (
       user: User,
       { limit, page }: UserBookingsArgs,
-      { db, viewer }: { db: Database; viewer: Viewer }
+      { db, req }: { db: Database; req: Request }
     ): Promise<UserBookingsData | null> => {
       try {
-        //TODO: fix authorization
+        const viewer = await authorize(db, req);
+        if (viewer && viewer._id === user._id) {
+          user.authorized = true;
+        }
 
         const data: UserBookingsData = {
           total: 0,
@@ -74,10 +78,13 @@ export const userResolvers: IResolvers = {
     listings: async (
       user: User,
       { limit, page }: UserListingsArgs,
-      { db, viewer }: { db: Database; viewer: Viewer }
+      { db, req }: { db: Database; req: Request }
     ): Promise<UserListingsData | null> => {
       try {
-        //TODO: fix authorization
+        const viewer = await authorize(db, req);
+        if (viewer && viewer._id === user._id) {
+          user.authorized = true;
+        }
 
         const data: UserListingsData = {
           total: 0,

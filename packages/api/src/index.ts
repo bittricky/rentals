@@ -8,6 +8,7 @@ import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./resolvers/typeDefs";
+import { authorize } from "./lib/utils";
 
 const JWT_SECRET = process.env.SECRET as string;
 
