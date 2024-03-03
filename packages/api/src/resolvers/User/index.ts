@@ -46,9 +46,7 @@ export const userResolvers: IResolvers = {
       { db, viewer }: { db: Database; viewer: Viewer }
     ): Promise<UserBookingsData | null> => {
       try {
-        if (viewer._id !== user._id) {
-          return null;
-        }
+        //TODO: fix authorization
 
         const data: UserBookingsData = {
           total: 0,
@@ -79,9 +77,7 @@ export const userResolvers: IResolvers = {
       { db, viewer }: { db: Database; viewer: Viewer }
     ): Promise<UserListingsData | null> => {
       try {
-        if (viewer._id !== user._id) {
-          return null;
-        }
+        //TODO: fix authorization
 
         const data: UserListingsData = {
           total: 0,

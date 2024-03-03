@@ -29,6 +29,7 @@ import reportWebVitals from "./reportWebVitals";
 
 const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem("token");
+
   return {
     ...headers,
     authorization: token ? `Bearer ${token}` : "",
@@ -37,7 +38,6 @@ const authLink = setContext((_, { headers }) => {
 
 const httpLink = new HttpLink({
   uri: "/api",
-  credentials: "include",
 });
 
 const link = authLink.concat(httpLink);
