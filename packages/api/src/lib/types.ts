@@ -48,6 +48,7 @@ export interface Listing {
   bookingsIndex: BookingIndex; //TODO: find a more robust solution to handle date time then using an hash map
   price: number;
   numOfGuests: number;
+  authorized: boolean;
 }
 
 export interface User {

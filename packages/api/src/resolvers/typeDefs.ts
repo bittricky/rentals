@@ -64,6 +64,7 @@ export const typeDefs = gql`
   type Query {
     user(id: ID!): User!
     isLoggedIn: Viewer!
+    listing(id: ID!): Listing!
   }
 
   type Mutation {
