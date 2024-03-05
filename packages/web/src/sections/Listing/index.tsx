@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
-import { Box } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 
 import { ErrorBanner, Skeleton } from "../../components";
+import { ListingDetails, ListingBookings } from "./components";
 import { LISTING } from "../../graphql/queries";
 import {
   Listing as ListingData,
@@ -45,7 +46,29 @@ export const Listing = () => {
   const listing = data ? data.listing : null;
   const listingBookings = listing ? listing.bookings : null;
 
-  return <h2>Listing</h2>;
+  const listingDetailsElement = listing ? (
+    <ListingDetails listing={listing} />
+  ) : null;
+
+  const listingBookingsElement = listingBookings ? (
+    <ListingBookings
+      listingBookings={listingBookings}
+      bookingsPage={bookingsPage}
+      limit={PAGE_LIMIT}
+      setBookingsPage={setBookingsPage}
+    />
+  ) : null;
+
+  return (
+    <Box>
+      <Flex direction="row" wrap="wrap" justify="space-between" gap="24px">
+        <Box flex={["0 0 100%", null, "0 0 58.33333%"]}>
+          {listingDetailsElement}
+          {listingBookingsElement}
+        </Box>
+      </Flex>
+    </Box>
+  );
 };
 
 Listing.displayName = "Listing";

@@ -8,9 +8,17 @@ import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./resolvers/typeDefs";
-import { authorize } from "./lib/utils";
 
-const JWT_SECRET = process.env.SECRET as string;
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined");
+}
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET is not defined");
+}
+
+const JWT_SECRET = process.env.JWT_SECRET as string;
+const SESSION_SECRET = process.env.SESSION_SECRET as string;
 
 const mount = async () => {
   const app = express();
@@ -19,7 +27,7 @@ const mount = async () => {
   app.use(
     session({
       name: "sid",
-      secret: JWT_SECRET,
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -37,7 +45,6 @@ const mount = async () => {
       const token = authHeader.replace("Bearer ", "");
       try {
         const decoded: any = jwt.verify(token, JWT_SECRET);
-
         const user = await db.users.findOne({ _id: decoded?.userId });
 
         if (user) {
