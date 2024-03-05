@@ -40,6 +40,7 @@ const authLink = setContext((_, { headers }) => {
 
 const httpLink = new HttpLink({
   uri: "/api",
+  credentials: "include",
 });
 
 const link = authLink.concat(httpLink);

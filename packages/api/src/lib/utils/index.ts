@@ -3,7 +3,7 @@ import { Database, User } from "../types";
 import jwt from "jsonwebtoken";
 
 // Assuming your JWT secret is stored in an environment variable or another secure location
-const JWT_SECRET = process.env.SECRET as string;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export async function authorize(
   db: Database,

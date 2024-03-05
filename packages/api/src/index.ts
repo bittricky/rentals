@@ -45,10 +45,16 @@ const mount = async () => {
       const token = authHeader.replace("Bearer ", "");
       try {
         const decoded: any = jwt.verify(token, JWT_SECRET);
+
         const user = await db.users.findOne({ _id: decoded?.userId });
 
         if (user) {
           req.session.userId = user._id.toString();
+          req.session.save((err) => {
+            if (err) {
+              console.error("Session save error:", err);
+            }
+          });
         } else {
           throw new Error("No User was found");
         }

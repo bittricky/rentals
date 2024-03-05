@@ -5,7 +5,7 @@ import { Google } from "../../auth/Google";
 import { Viewer, Database, User } from "../../lib/types";
 import { LoginInArgs } from "./types";
 
-const JWT_SECRET = process.env.SECRET as string;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 const logInViaGoogle = async (
   payload: any,
@@ -55,12 +55,7 @@ const logInViaGoogle = async (
 export const viewerResolvers: IResolvers = {
   Query: {
     isLoggedIn: async (_, args, { req, db }) => {
-      if (!req.session.userId || !req.session.token) {
-        return false;
-      }
-
       const user = await db.users.findOne({ _id: req.session.userId });
-
       if (!user) {
         return false;
       }
