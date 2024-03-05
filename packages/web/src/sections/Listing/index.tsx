@@ -19,8 +19,9 @@ const PAGE_LIMIT = 3;
 
 export const Listing = () => {
   const [bookingsPage, setBookingsPage] = useState(1);
-  const [checkInDate, setCheckInDate] = useState(null);
-  const [checkOutDate, setCheckOutDate] = useState(null);
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+
   const { id: listingId } = useParams();
   const { loading, data, error } = useQuery<ListingData, ListingVariables>(
     LISTING,
@@ -66,7 +67,13 @@ export const Listing = () => {
   ) : null;
 
   const listingCreateBookingElement = listing ? (
-    <ListingCreateBooking price={pricse} />
+    <ListingCreateBooking
+      price={listing.price}
+      checkInDate={checkInDate}
+      checkOutDate={checkOutDate}
+      setCheckInDate={setCheckInDate}
+      setCheckOutDate={setCheckOutDate}
+    />
   ) : null;
 
   return (

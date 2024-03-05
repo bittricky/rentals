@@ -21,12 +21,6 @@ interface Props {
   setCheckOutDate: (checkOutDate: Date | null) => void;
 }
 
-const DateInput = React.forwardRef(({ value, onClick }, ref) => (
-  <Input onClick={onClick} value={value} readOnly ref={ref} />
-));
-
-DateInput.displayName = "DateInput";
-
 export const ListingCreateBooking = ({
   price,
   checkInDate,
@@ -70,7 +64,7 @@ export const ListingCreateBooking = ({
           filterDate={disabledDate}
           showTimeSelect
           dateFormat="MMMM d, yyyy h:mm aa"
-          customInput={<DateInput />}
+          customInput={<Input />}
         />
         <Text mt={4} fontWeight="bold">
           Check Out
@@ -81,7 +75,7 @@ export const ListingCreateBooking = ({
           filterDate={disabledDate}
           showTimeSelect
           dateFormat="MMMM d, yyyy h:mm aa"
-          customInput={<DateInput />}
+          customInput={<Input />}
           disabled={checkOutInputDisabled}
         />
         <Divider my={4} />
