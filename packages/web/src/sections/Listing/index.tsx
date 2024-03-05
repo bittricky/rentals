@@ -4,7 +4,11 @@ import { useQuery } from "@apollo/react-hooks";
 import { Flex, Box } from "@chakra-ui/react";
 
 import { ErrorBanner, Skeleton } from "../../components";
-import { ListingDetails, ListingBookings } from "./components";
+import {
+  ListingDetails,
+  ListingBookings,
+  ListingCreateBooking,
+} from "./components";
 import { LISTING } from "../../graphql/queries";
 import {
   Listing as ListingData,
@@ -15,6 +19,8 @@ const PAGE_LIMIT = 3;
 
 export const Listing = () => {
   const [bookingsPage, setBookingsPage] = useState(1);
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
   const { id: listingId } = useParams();
   const { loading, data, error } = useQuery<ListingData, ListingVariables>(
     LISTING,
@@ -59,12 +65,19 @@ export const Listing = () => {
     />
   ) : null;
 
+  const listingCreateBookingElement = listing ? (
+    <ListingCreateBooking price={pricse} />
+  ) : null;
+
   return (
     <Box>
       <Flex direction="row" wrap="wrap" justify="space-between" gap="24px">
         <Box flex={["0 0 100%", null, "0 0 58.33333%"]}>
           {listingDetailsElement}
           {listingBookingsElement}
+        </Box>
+        <Box width={["100%", null, "41.66667%"]}>
+          {listingCreateBookingElement}
         </Box>
       </Flex>
     </Box>
