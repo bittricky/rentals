@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -14,10 +14,15 @@ import dubaiImage from "../../assets/dubai.jpg";
 import losAngelesImage from "../../assets/los-angeles.jpg";
 import londonImage from "../../assets/london.jpg";
 
-export const HomeHero = () => {
-  const handleSearch = (value: string) => {
-    // Implement search functionality here
-    console.log(value);
+interface Props {
+  onSearch: (value: string) => void;
+}
+
+export const HomeHero = ({ onSearch }: Props) => {
+  const [searchState, setSearchState] = useState<string>("");
+
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchState(e.target.value);
   };
 
   return (
@@ -32,11 +37,9 @@ export const HomeHero = () => {
           mb={4}
           width="auto"
           display="inline-block"
+          onInput={handleInput}
         />
-        <Button
-          colorScheme="teal"
-          onClick={() => handleSearch("San Francisco")}
-        >
+        <Button colorScheme="teal" onClick={() => onSearch(searchState)}>
           Search
         </Button>
       </Box>
