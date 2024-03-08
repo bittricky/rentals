@@ -8,7 +8,7 @@ import {
   ListingsVariables,
 } from "../../graphql/queries/Listings/__generated__/Listings";
 import { ListingsFilter } from "../../graphql/globalTypes";
-import { HomeHero, HomeListings } from "./components";
+import { HomeHero, HomeListings, HomeSkeleton } from "./components";
 
 import mapBackground from "./assets/map-background.jpg";
 import { displayErrorMessage } from "../../utils";
@@ -43,7 +43,7 @@ export const Home = () => {
 
   const renderListingsSection = () => {
     if (loading) {
-      return "Loading...";
+      return <HomeSkeleton />;
     }
 
     if (data) {
