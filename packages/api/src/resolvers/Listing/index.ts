@@ -2,6 +2,7 @@ import { IResolvers } from "@graphql-tools/utils";
 import { ObjectId } from "mongodb";
 import { Request } from "express";
 import { Database, Listing, User } from "../../lib/types";
+import { Google } from "../../lib/api";
 import { authorize } from "../../lib/utils";
 import {
   ListingArgs,
@@ -10,7 +11,9 @@ import {
   ListingsArgs,
   ListingsData,
   ListingsFilters,
+  ListingsQuery,
 } from "./types";
+import { count } from "console";
 
 export const listingResolvers: IResolvers = {
   Query: {
@@ -38,19 +41,43 @@ export const listingResolvers: IResolvers = {
     },
     listings: async (
       _: undefined,
-      { filter, limit, page }: ListingsArgs,
+      { location, filter, limit, page }: ListingsArgs,
       { db }: { db: Database }
     ): Promise<ListingsData> => {
       try {
+        const query: ListingsQuery = {};
         const data: ListingsData = {
+          region: null,
           total: 0,
           result: [],
         };
 
         data.total = await db.listings.countDocuments();
 
+        if (location) {
+          const { country, admin, city } = await Google.geocode(location);
+
+          if (city) {
+            query.city = city;
+          }
+
+          if (admin) {
+            query.admin = admin;
+          }
+
+          if (country) {
+            query.country = country;
+          } else {
+            throw new Error("No Country was found");
+          }
+
+          const cityText = city ? `${city}, ` : "";
+          const adminText = admin ? `${admin}, ` : "";
+          data.region = `${cityText}${adminText}${country}`;
+        }
+
         const cursor = db.listings
-          .find({})
+          .find(query)
           .skip(page > 0 ? (page - 1) * limit : 0)
           .limit(limit);
 

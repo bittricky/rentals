@@ -17,7 +17,7 @@ const parseAddress = (addressComponents: AddressComponent[]) => {
       if (component.types.includes(AddressType.country))
         acc.country = component.long_name;
       if (component.types.includes(AddressType.administrative_area_level_1))
-        acc.administrativeArea = component.long_name;
+        acc.admin = component.long_name;
       if (
         component.types.includes(AddressType.locality) ||
         component.types.includes(GeocodingAddressComponentType.postal_town)
@@ -26,7 +26,7 @@ const parseAddress = (addressComponents: AddressComponent[]) => {
 
       return acc;
     },
-    { country: "", administrativeArea: "", city: "" }
+    { country: "", admin: "", city: "" }
   );
 
   return address;
