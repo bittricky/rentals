@@ -34,17 +34,22 @@ const parseAddress = (addressComponents: AddressComponent[]) => {
 
 export const Google = {
   geocode: async (address: string) => {
-    const res = await maps.geocode({
-      params: {
-        address,
-        key: process.env.G_GEOCODE_KEY!,
-      },
-    });
+    try {
+      const res = await maps.geocode({
+        params: {
+          key: process.env.G_GEOCODE_KEY as string,
+          address: address,
+        },
+      });
 
-    if (res.status < 200 || res.status > 299) {
-      throw new Error("[app] Failed to geocode address!");
+      if (res.status < 200 || res.status > 299) {
+        throw new Error("[app] Failed to geocode address!");
+      }
+
+      return parseAddress(res.data.results[0].address_components);
+    } catch (e) {
+      console.log(`[app] ${e}`);
+      return { country: null, admin: null, city: null };
     }
-
-    return parseAddress(res.data.results[0].address_components);
   },
 };

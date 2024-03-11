@@ -13,7 +13,6 @@ import {
   ListingsFilters,
   ListingsQuery,
 } from "./types";
-import { count } from "console";
 
 export const listingResolvers: IResolvers = {
   Query: {

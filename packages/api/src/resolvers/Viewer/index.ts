@@ -87,7 +87,7 @@ export const viewerResolvers: IResolvers = {
         }
 
         const jwtToken = jwt.sign({ userId: viewer._id }, JWT_SECRET, {
-          expiresIn: "1h",
+          expiresIn: "24h",
         });
 
         req.session.userId = viewer._id;
