@@ -53,7 +53,7 @@ export const Listings = () => {
         <Text>
           Be the first person to create a{" "}
           <ChakraLink
-            as={React.forwardRef((props, ref) => (
+            as={React.forwardRef<HTMLDivElement, any>((props, ref) => (
               <div ref={ref} {...props} onClick={() => navigate("/host")} />
             ))}
           >
