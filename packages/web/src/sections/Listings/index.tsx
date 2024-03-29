@@ -9,7 +9,11 @@ import {
   VStack,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import { ListingsFilters, ListingsPagination } from "./components";
+import {
+  ListingsFilters,
+  ListingsPagination,
+  ListingsSkeleton,
+} from "./components";
 import { ListingCard } from "../../components";
 import { LISTINGS } from "../../graphql/queries";
 import {
@@ -26,14 +30,21 @@ export const Listings = () => {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
-    variables: {
-      location,
-      filter,
-      limit: PAGE_LIMIT,
-      page,
-    },
-  });
+  const { loading, data } = useQuery<ListingsData, ListingsVariables>(
+    LISTINGS,
+    {
+      variables: {
+        location,
+        filter,
+        limit: PAGE_LIMIT,
+        page,
+      },
+    }
+  );
+
+  if (loading) {
+    return <ListingsSkeleton />;
+  }
 
   const listings = data ? data.listings : null;
   const listingsRegion = listings ? listings.region : null;
