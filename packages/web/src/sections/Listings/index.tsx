@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import {
@@ -9,6 +9,7 @@ import {
   VStack,
   Link as ChakraLink,
 } from "@chakra-ui/react";
+import { ListingsFilters } from "./components/ListingsFilters";
 import { ListingCard } from "../../components";
 import { LISTINGS } from "../../graphql/queries";
 import {
@@ -21,12 +22,13 @@ const PAGE_LIMIT = 8;
 
 export const Listings = () => {
   const { location } = useParams<{ location: string }>();
+  const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const navigate = useNavigate();
 
   const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
     variables: {
       location,
-      filter: ListingsFilter.PRICE_LOW_TO_HIGH,
+      filter,
       limit: PAGE_LIMIT,
       page: 1,
     },
@@ -37,11 +39,14 @@ export const Listings = () => {
 
   const listingsSectionElement =
     listings && listings.result.length ? (
-      <SimpleGrid columns={[1, 2, 4]} spacing="4">
-        {listings.result.map((listing: any) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
-      </SimpleGrid>
+      <div>
+        <ListingsFilters filter={filter} setFilter={setFilter} />
+        <SimpleGrid columns={[1, 2, 4]} spacing="4">
+          {listings.result.map((listing: any) => (
+            <ListingCard key={listing.id} listing={listing} />
+          ))}
+        </SimpleGrid>
+      </div>
     ) : (
       <VStack spacing="4">
         <Text>
