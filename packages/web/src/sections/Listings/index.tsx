@@ -14,7 +14,7 @@ import {
   ListingsPagination,
   ListingsSkeleton,
 } from "./components";
-import { ListingCard } from "../../components";
+import { ErrorBanner, ListingCard } from "../../components";
 import { LISTINGS } from "../../graphql/queries";
 import {
   Listings as ListingsData,
@@ -30,7 +30,7 @@ export const Listings = () => {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  const { loading, data } = useQuery<ListingsData, ListingsVariables>(
+  const { loading, data, error } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
       variables: {
@@ -44,6 +44,15 @@ export const Listings = () => {
 
   if (loading) {
     return <ListingsSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Box>
+        <ErrorBanner description="We either couldn't find anything matching your search or have encountered an error. If you're searching for a unique location, try searching again with more common keywords." />
+        <ListingsSkeleton />
+      </Box>
+    );
   }
 
   const listings = data ? data.listings : null;
