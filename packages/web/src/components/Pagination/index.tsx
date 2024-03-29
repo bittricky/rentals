@@ -8,6 +8,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+//TODO: refactor to mimi ant-design pagination
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalCount,

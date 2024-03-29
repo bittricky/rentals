@@ -9,7 +9,7 @@ import {
   VStack,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import { ListingsFilters } from "./components/ListingsFilters";
+import { ListingsFilters, ListingsPagination } from "./components";
 import { ListingCard } from "../../components";
 import { LISTINGS } from "../../graphql/queries";
 import {
@@ -23,6 +23,7 @@ const PAGE_LIMIT = 8;
 export const Listings = () => {
   const { location } = useParams<{ location: string }>();
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
   const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
@@ -30,7 +31,7 @@ export const Listings = () => {
       location,
       filter,
       limit: PAGE_LIMIT,
-      page: 1,
+      page,
     },
   });
 
@@ -40,6 +41,12 @@ export const Listings = () => {
   const listingsSectionElement =
     listings && listings.result.length ? (
       <div>
+        <ListingsPagination
+          total={listings.total}
+          page={page}
+          limit={PAGE_LIMIT}
+          setPage={setPage}
+        />
         <ListingsFilters filter={filter} setFilter={setFilter} />
         <SimpleGrid columns={[1, 2, 4]} spacing="4">
           {listings.result.map((listing: any) => (
