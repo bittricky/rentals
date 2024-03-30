@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import React, { ChangeEvent, useState, useEffect } from "react";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -25,9 +25,18 @@ interface Props {
 
 export const Header = ({ viewer, setViewer }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const bgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.600", "white");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  useEffect(() => {
+    const { pathname } = location;
+    if (!pathname.includes("/listings")) {
+      setSearchQuery("");
+      return;
+    }
+  }, [location]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
