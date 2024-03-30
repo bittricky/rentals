@@ -32,9 +32,15 @@ export const Header = ({ viewer, setViewer }: Props) => {
 
   useEffect(() => {
     const { pathname } = location;
+    const pathSubStrings = pathname.split("/");
+
     if (!pathname.includes("/listings")) {
       setSearchQuery("");
       return;
+    }
+
+    if (pathname.includes("/listings") && pathSubStrings.length === 3) {
+      setSearchQuery(pathSubStrings[2]);
     }
   }, [location]);
 

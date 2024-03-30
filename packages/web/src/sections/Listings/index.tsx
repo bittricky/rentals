@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import {
@@ -26,6 +26,7 @@ const PAGE_LIMIT = 8;
 
 export const Listings = () => {
   const { location } = useParams<{ location: string }>();
+  const locationRef = useRef(location);
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ export const Listings = () => {
   const { loading, data, error } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
+      skip: locationRef.current !== location && page !== 1,
       variables: {
         location,
         filter,
@@ -41,6 +43,11 @@ export const Listings = () => {
       },
     }
   );
+
+  useEffect(() => {
+    setPage(1);
+    locationRef.current = location;
+  }, [location]);
 
   if (loading) {
     return <ListingsSkeleton />;
