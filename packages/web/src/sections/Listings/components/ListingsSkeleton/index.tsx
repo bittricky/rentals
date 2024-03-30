@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Grid, GridItem, Skeleton, Image } from "@chakra-ui/react";
 
-import listingLoadingCardCover from "../../assets/listing-loading-card-cover.jpg";
+import listingLoadingCardCover from "./assets/listing-loading-card-cover.jpg";
 
 export const ListingsSkeleton = () => {
   const emptyData = Array(4).fill({});

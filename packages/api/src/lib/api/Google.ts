@@ -43,7 +43,7 @@ export const Google = {
           address: address,
         },
       });
-      console.log(res.data);
+
       if (res.status < 200 || res.status > 299) {
         throw new Error("[app] Failed to geocode address!");
       }
