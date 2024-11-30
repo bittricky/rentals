@@ -1,13 +1,35 @@
-import express from "express";
+import express, { Application } from "express";
+import type { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
-config();
-
+import cors from "cors";
 import session from "express-session";
 import { ApolloServer } from "apollo-server-express";
+import type { ExpressContext } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { resolvers } from "./resolvers";
 import { typeDefs } from "./resolvers/typeDefs";
+import { Database } from "./lib/types";
+
+config();
+
+// Type declarations
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+  }
+}
+
+// Define context type for Apollo Server
+interface ApolloContext {
+  db: Database;
+  req: Request;
+  res: Response;
+}
+
+interface MyContext extends ApolloContext {
+  req: Request & { user?: any };
+}
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined");
@@ -17,66 +39,75 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET is not defined");
 }
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
-const SESSION_SECRET = process.env.SESSION_SECRET as string;
+const JWT_SECRET = process.env.JWT_SECRET;
+const SESSION_SECRET = process.env.SESSION_SECRET;
+const PORT = process.env.PORT || 4000;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
 const mount = async () => {
-  const app = express();
+const app: Application = express();
   const db = await connectDatabase();
 
-  app.use(
-    session({
-      name: "sid",
-      secret: SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        sameSite: "strict",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days in milliseconds
-      },
-    })
-  );
+  // Configure middleware
+  app.use(cors({
+    origin: CLIENT_URL,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 
-  app.use(async (req, _, next) => {
+  app.use(express.json());
+
+  // Configure session middleware with proper typing
+  const sessionConfig: session.SessionOptions = {
+    name: "sid",
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax"
+    }
+  };
+
+  app.use(session(sessionConfig) as RequestHandler);
+
+  // JWT Authentication middleware
+  const authMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
       try {
-        const decoded: any = jwt.verify(token, JWT_SECRET);
-
-        const user = await db.users.findOne({ _id: decoded?.userId });
-
-        if (user) {
-          req.session.userId = user._id.toString();
-          req.session.save((err) => {
-            if (err) {
-              console.error("Session save error:", err);
-            }
-          });
-        } else {
-          throw new Error("No User was found");
-        }
-      } catch (err) {
-        console.log("Invalid token: ", err);
+        const decoded = jwt.verify(token, JWT_SECRET);
+        (req as any).user = decoded;
+      } catch (error) {
+        console.error("JWT verification failed:", error);
       }
     }
     next();
-  });
+  };
+
+  app.use(authMiddleware);
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req, res }) => {
-      return { db, req, res };
+    context: async ({ req, res }: ExpressContext): Promise<MyContext> => {
+      return { 
+        db, 
+        req: req as Request & { user?: any }, 
+        res: res as Response 
+      };
     },
   });
 
   await server.start();
+  
+  // @ts-ignore
   server.applyMiddleware({ app, path: "/api" });
 
-  const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
     console.log(`[app]: http://localhost:${PORT}${server.graphqlPath}`);
   });
