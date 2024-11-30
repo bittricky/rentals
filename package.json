@@ -10,12 +10,12 @@
     "clean": "rimraf ./packages/*/dist",
     "build": "tsc --build",
     "pretest": "npm run lint && npm run build",
-    "start": "concurrently --kill-others-on-fail \"npm run start:api\" \"npm run start:web\"",
-    "start:web": "npm run -w @rentals/web start",
-    "start:api": "npm run -w @rentals/api start",
-    "seed": "cd packages/api/ && npm run seed",
-    "gen:schema": "cd packages/web/ && npm run gen:schema",
-    "gen:generate": "cd packages/web/ && npm run gen:generate"
+    "start": "concurrently --kill-others-on-fail \"yarn start:api\" \"yarn start:web\"",
+    "start:web": "yarn workspace @rentals/web dev",
+    "start:api": "yarn workspace @rentals/api start",
+    "seed": "cd packages/api/ && yarn seed",
+    "gen:schema": "cd packages/web/ && yarn gen:schema",
+    "gen:generate": "cd packages/web/ && yarn gen:generate"
   },
   "engines": {
     "node": ">=17.0.0"
@@ -43,5 +43,6 @@
   "resolutions": {
     "graphql": "^15.8.0",
     "@apollo/federation": "0.38.1"
-  }
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
