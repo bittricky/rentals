@@ -1,7 +1,15 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { ObjectId } from "mongodb";
 import { Database, PropertyReview, Listing, User } from "../../lib/types";
-import { authorize } from "../../lib/utils";
+import { Request } from "express";
+import jwt from "jsonwebtoken";
+
+// Extend Express Request to include our user property
+interface AuthenticatedRequest extends Request {
+  user?: {
+    _id: string;
+  };
+}
 
 export const propertyReviewResolvers: IResolvers = {
   Query: {
@@ -43,47 +51,93 @@ export const propertyReviewResolvers: IResolvers = {
         content: string;
         rating: number;
       },
-      { db, req }: { db: Database; req: { user?: { _id: string } } }
+      { db, req }: { db: Database; req: AuthenticatedRequest }
     ): Promise<PropertyReview> => {
-      const viewer = await authorize(db, req);
-      if (!viewer) {
-        throw new Error("Viewer cannot be found");
-      }
-
-      const listing = await db.listings.findOne({ _id: new ObjectId(listingId) });
-      if (!listing) {
-        throw new Error("Listing not found");
-      }
-
-      const newReview: PropertyReview = {
-        _id: new ObjectId(),
-        listing: new ObjectId(listingId),
-        author: new ObjectId(viewer._id),
-        content,
-        rating,
-        createdAt: new Date().toISOString()
-      };
-
-      await db.propertyReviews.insertOne(newReview);
-
-      // Update listing's review stats
-      const reviews = await db.propertyReviews
-        .find({ listing: new ObjectId(listingId) })
-        .toArray();
-      
-      const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-      
-      await db.listings.updateOne(
-        { _id: new ObjectId(listingId) },
-        {
-          $set: {
-            averageRating,
-            reviewCount: reviews.length
-          }
+      try {
+        // Check if user is authenticated via JWT token
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+          throw new Error("Authentication required");
         }
-      );
 
-      return newReview;
+        const token = authHeader.split(" ")[1];
+        if (!token) {
+          throw new Error("Invalid authentication token");
+        }
+
+        // Verify JWT token and get userId
+        const JWT_SECRET = process.env.JWT_SECRET as string;
+        if (!JWT_SECRET) {
+          throw new Error("JWT_SECRET is not configured");
+        }
+
+        try {
+          const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+          if (!decoded.userId) {
+            throw new Error("Invalid token payload");
+          }
+          
+          // Find the authenticated user
+          const viewer = await db.users.findOne({ 
+            _id: new ObjectId(decoded.userId)
+          });
+          
+          if (!viewer) {
+            throw new Error("User not found");
+          }
+
+          // Check if listing exists
+          const listing = await db.listings.findOne({ _id: new ObjectId(listingId) });
+          if (!listing) {
+            throw new Error("Listing not found");
+          }
+
+          // Check if user has already reviewed this listing
+          const existingReview = await db.propertyReviews.findOne({
+            listing: new ObjectId(listingId),
+            author: viewer._id
+          });
+
+          if (existingReview) {
+            throw new Error("You have already reviewed this property");
+          }
+
+          // Create the new review
+          const newReview: PropertyReview = {
+            _id: new ObjectId(),
+            listing: new ObjectId(listingId),
+            author: viewer._id,
+            content,
+            rating,
+            createdAt: new Date().toISOString()
+          };
+
+          await db.propertyReviews.insertOne(newReview);
+
+          // Update listing's review stats
+          const reviews = await db.propertyReviews
+            .find({ listing: new ObjectId(listingId) })
+            .toArray();
+          
+          const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+          
+          await db.listings.updateOne(
+            { _id: new ObjectId(listingId) },
+            {
+              $set: {
+                averageRating,
+                reviewCount: reviews.length
+              }
+            }
+          );
+
+          return newReview;
+        } catch (jwtError) {
+          throw new Error(`Authentication failed: ${jwtError}`);
+        }
+      } catch (error) {
+        throw new Error(`Failed to create property review: ${error}`);
+      }
     }
   },
   PropertyReview: {
@@ -112,5 +166,5 @@ export const propertyReviewResolvers: IResolvers = {
       }
       return listing;
     }
-  },
+  }
 };
