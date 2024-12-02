@@ -13,11 +13,14 @@ export const propertyReviewResolvers: IResolvers = {
       try {
         const data = await db.propertyReviews
           .find({ listing: new ObjectId(listingId) })
+          .sort({ createdAt: -1 })
           .skip(page > 0 ? (page - 1) * limit : 0)
           .limit(limit)
           .toArray();
 
-        const total = await db.propertyReviews.countDocuments({ listing: new ObjectId(listingId) });
+        const total = await db.propertyReviews.countDocuments({ 
+          listing: new ObjectId(listingId) 
+        });
 
         return {
           total,
@@ -92,7 +95,7 @@ export const propertyReviewResolvers: IResolvers = {
       _args: {},
       { db }: { db: Database }
     ): Promise<User> => {
-      const author = await db.users.findOne({ _id: new ObjectId(review.author) });
+      const author = await db.users.findOne({ _id: new ObjectId(review.author.toString()) });
       if (!author) {
         throw new Error("Author not found");
       }
@@ -103,7 +106,7 @@ export const propertyReviewResolvers: IResolvers = {
       _args: {},
       { db }: { db: Database }
     ): Promise<Listing> => {
-      const listing = await db.listings.findOne({ _id: new ObjectId(review.listing) });
+      const listing = await db.listings.findOne({ _id: new ObjectId(review.listing.toString()) });
       if (!listing) {
         throw new Error("Listing not found");
       }

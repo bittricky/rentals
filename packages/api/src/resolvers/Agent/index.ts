@@ -1,6 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { Database, Agent, User, AgentReview } from "../../lib/types";
-import { AgentsArgs, AgentArgs } from "./types";
+import { AgentsArgs, AgentArgs, AgentReviewsArgs } from "./types";
 import { ObjectId } from "mongodb";
 
 export const agentResolvers: IResolvers = {
@@ -11,7 +11,7 @@ export const agentResolvers: IResolvers = {
       { db }: { db: Database }
     ): Promise<{ total: number; result: Agent[] }> => {
       try {
-        const data: Agent[] = await db.agents
+        const data = await db.agents
           .find({})
           .skip(page > 0 ? (page - 1) * limit : 0)
           .limit(limit)
@@ -42,6 +42,29 @@ export const agentResolvers: IResolvers = {
         throw new Error(`Failed to query agent: ${error}`);
       }
     },
+    agentReviews: async (
+      _root: undefined,
+      { agentId, limit, page }: AgentReviewsArgs,
+      { db }: { db: Database }
+    ): Promise<{ total: number; result: AgentReview[] }> => {
+      try {
+        const data = await db.agentReviews
+          .find({ agent: new ObjectId(agentId) })
+          .sort({ createdAt: -1 })
+          .skip(page > 0 ? (page - 1) * limit : 0)
+          .limit(limit)
+          .toArray();
+
+        const total = await db.agentReviews.countDocuments({ agent: new ObjectId(agentId) });
+
+        return {
+          total,
+          result: data,
+        };
+      } catch (error) {
+        throw new Error(`Failed to query agent reviews: ${error}`);
+      }
+    }
   },
   Agent: {
     id: (agent: Agent): string => agent._id.toString(),
@@ -58,38 +81,61 @@ export const agentResolvers: IResolvers = {
     },
     reviews: async (
       agent: Agent,
-      _args: {},
+      { limit = 10, page = 1 }: { limit?: number; page?: number },
       { db }: { db: Database }
-    ): Promise<AgentReview[]> => {
+    ): Promise<{ total: number; result: AgentReview[] }> => {
       try {
-        const reviews = await db.agentReviews
+        const data = await db.agentReviews
           .find({ agent: agent._id })
           .sort({ createdAt: -1 })
+          .skip(page > 0 ? (page - 1) * limit : 0)
+          .limit(limit)
           .toArray();
-        return reviews;
+
+        const total = await db.agentReviews.countDocuments({ agent: agent._id });
+
+        return {
+          total,
+          result: data,
+        };
       } catch (error) {
         throw new Error(`Failed to query agent reviews: ${error}`);
+      }
+    },
+    ratings: async (agent: Agent, _args: {}, { db }: { db: Database }): Promise<number> => {
+      try {
+        const reviews = await db.agentReviews.find({ agent: agent._id }).toArray();
+        if (reviews.length === 0) return 0;
+        
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        return totalRating / reviews.length;
+      } catch (error) {
+        throw new Error(`Failed to calculate agent ratings: ${error}`);
+      }
+    },
+    reviewCount: async (agent: Agent, _args: {}, { db }: { db: Database }): Promise<number> => {
+      try {
+        return await db.agentReviews.countDocuments({ agent: agent._id });
+      } catch (error) {
+        throw new Error(`Failed to count agent reviews: ${error}`);
       }
     }
   },
   User: {
     isAgent: async (user: User, _args: {}, { db }: { db: Database }): Promise<boolean> => {
       try {
-        return user.isAgent || false;
+        const agent = await db.agents.findOne({ user: user._id });
+        return !!agent;
       } catch (error) {
-        throw new Error(`Failed to determine agent status: ${error}`);
+        throw new Error(`Failed to check if user is agent: ${error}`);
       }
     },
     agentProfile: async (user: User, _args: {}, { db }: { db: Database }): Promise<Agent | null> => {
       try {
-        if (!user.agentProfile) {
-          return null;
-        }
-        const agent = await db.agents.findOne({ _id: user.agentProfile });
-        return agent || null;
+        return await db.agents.findOne({ user: user._id });
       } catch (error) {
-        throw new Error(`Failed to query agent profile: ${error}`);
+        throw new Error(`Failed to get agent profile: ${error}`);
       }
-    },
-  },
+    }
+  }
 };
