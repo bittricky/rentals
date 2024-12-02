@@ -35,6 +35,29 @@ export interface Booking {
   checkOut: string;
 }
 
+export interface Feature {
+  name: string;
+  icon: string;
+  description?: string;
+}
+
+export interface Review {
+  _id: ObjectId;
+  author: ObjectId;  // User who wrote the review
+  content: string;
+  rating: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface PropertyReview extends Review {
+  listing: ObjectId;
+}
+
+export interface AgentReview extends Review {
+  agent: ObjectId;
+}
+
 export interface Listing {
   _id: ObjectId;
   title: string;
@@ -55,6 +78,10 @@ export interface Listing {
   swimmingPools: number;
   pantries: number;
   authorized: boolean;
+  features: Feature[];
+  reviews: ObjectId[];
+  averageRating: number;
+  reviewCount: number;
 }
 
 export interface PriceRange {
@@ -94,4 +121,6 @@ export interface Database {
   listings: Collection<Listing>;
   users: Collection<User>;
   agents: Collection<Agent>;
+  propertyReviews: Collection<PropertyReview>;
+  agentReviews: Collection<AgentReview>;
 }

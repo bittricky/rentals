@@ -24,6 +24,56 @@ export const typeDefs = gql`
     PRICE_HIGH_TO_LOW
   }
 
+  type Feature {
+    name: String!
+    icon: String!
+    description: String
+  }
+
+  type Review {
+    id: ID!
+    author: User!
+    content: String!
+    rating: Float!
+    createdAt: String!
+    updatedAt: String
+  }
+
+  type PropertyReview {
+    id: ID!
+    listing: Listing!
+    author: User!
+    content: String!
+    rating: Float!
+    createdAt: String!
+    updatedAt: String
+  }
+
+  type AgentReview {
+    id: ID!
+    agent: Agent!
+    author: User!
+    content: String!
+    rating: Float!
+    createdAt: String!
+    updatedAt: String
+  }
+
+  type Reviews {
+    total: Int!
+    result: [Review!]!
+  }
+
+  type PropertyReviews {
+    total: Int!
+    result: [PropertyReview!]!
+  }
+
+  type AgentReviews {
+    total: Int!
+    result: [AgentReview!]!
+  }
+
   type Listing {
     id: ID!
     title: String!
@@ -39,6 +89,14 @@ export const typeDefs = gql`
     bookingsIndex: String!
     price: Int!
     numOfGuests: Int!
+    bedrooms: Int!
+    bathrooms: Int!
+    swimmingPools: Int!
+    pantries: Int!
+    features: [Feature!]!
+    reviews(limit: Int!, page: Int!): PropertyReviews
+    averageRating: Float!
+    reviewCount: Int!
   }
 
   type Listings {
@@ -69,6 +127,7 @@ export const typeDefs = gql`
     specializations: [String!]!
     ratings: Float!
     reviewCount: Int!
+    reviews(limit: Int!, page: Int!): AgentReviews
   }
 
   type Agents {
@@ -102,6 +161,11 @@ export const typeDefs = gql`
     message: String!
   }
 
+  input ReviewInput {
+    content: String!
+    rating: Float!
+  }
+
   type Query {
     user(id: ID!): User!
     isLoggedIn: Viewer!
@@ -114,11 +178,15 @@ export const typeDefs = gql`
     ): Listings!
     agent(id: ID!): Agent!
     agents(limit: Int!, page: Int!): Agents!
+    propertyReviews(listingId: ID!, limit: Int!, page: Int!): PropertyReviews!
+    agentReviews(agentId: ID!, limit: Int!, page: Int!): AgentReviews!
   }
 
   type Mutation {
     logIn(input: LoginInput): Viewer!
     logOut: Viewer!
     contactHost(input: ContactHostInput!): ContactHostResponse!
+    addPropertyReview(listingId: ID!, input: ReviewInput!): PropertyReview!
+    addAgentReview(agentId: ID!, input: ReviewInput!): AgentReview!
   }
 `;
