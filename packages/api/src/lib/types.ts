@@ -52,7 +52,7 @@ export interface Listing {
 }
 
 export interface User {
-  _id: string;
+  _id: ObjectId;
   name: string;
   avatar: string;
   contact: string;

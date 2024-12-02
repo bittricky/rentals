@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { Database, User } from "../types";
+import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 
 // Assuming your JWT secret is stored in an environment variable or another secure location
@@ -24,7 +25,7 @@ export async function authorize(
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
 
-    const viewer = await db.users.findOne<User>({ _id: decoded.userId });
+    const viewer = await db.users.findOne<User>({ _id: new ObjectId(decoded.userId) });
     return viewer;
   } catch (error) {
     console.error("Failed to authorize with JWT:", error);

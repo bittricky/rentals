@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
+import { Request } from "express";
 import { IResolvers } from "@graphql-tools/utils";
 import { Google } from "../../auth/Google";
 import { Viewer, Database, User } from "../../lib/types";
@@ -9,8 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 
 const logInViaGoogle = async (
   payload: any,
-  db: Database,
-  res: Response
+  db: Database
 ): Promise<User | undefined> => {
   const googleId = payload["sub"]; // Google's unique ID for the user
   const userName = payload["name"];
@@ -54,14 +53,14 @@ const logInViaGoogle = async (
 
 export const viewerResolvers: IResolvers = {
   Query: {
-    isLoggedIn: async (_, args, { req, db }) => {
+    isLoggedIn: async (_, _args, { req, db }) => {
       const user = await db.users.findOne({ _id: req.session.userId });
       if (!user) {
         return false;
       }
 
       return {
-        _id: user._id,
+        _id: user._id.toString(),
         token: user.token,
         avatar: user.avatar,
         hasWallet: user.hasWallet,
@@ -73,24 +72,24 @@ export const viewerResolvers: IResolvers = {
     logIn: async (
       _root: undefined,
       { input }: LoginInArgs,
-      { db, req, res }: { db: Database; req: Request; res: Response }
+      { db, req }: { db: Database; req: Request }
     ): Promise<Viewer> => {
       try {
         const { idToken } = input;
 
         const payload = await Google.verifyToken(idToken);
 
-        const viewer = payload ? await logInViaGoogle(payload, db, res) : null;
+        const viewer = payload ? await logInViaGoogle(payload, db) : null;
 
         if (!viewer) {
           return { didRequest: true };
         }
 
-        const jwtToken = jwt.sign({ userId: viewer._id }, JWT_SECRET, {
+        const jwtToken = jwt.sign({ userId: viewer._id.toString() }, JWT_SECRET, {
           expiresIn: "24h",
         });
 
-        req.session.userId = viewer._id;
+        req.session.userId = viewer._id.toString();
         req.session.isLoggedIn = true;
 
         req.session.regenerate((err) => {
@@ -98,7 +97,7 @@ export const viewerResolvers: IResolvers = {
         });
 
         return {
-          _id: viewer._id,
+          _id: viewer._id.toString(),
           token: jwtToken,
           avatar: viewer.avatar,
           walletId: viewer.walletId,
@@ -111,7 +110,7 @@ export const viewerResolvers: IResolvers = {
     logOut: (
       _root: undefined,
       _args: object,
-      { req, res }: { req: Request; res: Response }
+      { req }: { req: Request }
     ): Viewer => {
       try {
         req.session.destroy((err) => {
@@ -120,6 +119,7 @@ export const viewerResolvers: IResolvers = {
           }
           return true;
         });
+
         return { didRequest: true };
       } catch (error) {
         throw new Error(`Failed to log out: ${error}`);
@@ -127,7 +127,7 @@ export const viewerResolvers: IResolvers = {
     },
   },
   Viewer: {
-    id: (viewer): string | undefined => {
+    id: (viewer: Viewer): string | undefined => {
       return viewer._id;
     },
     hasWallet: (viewer: Viewer): boolean | undefined => {

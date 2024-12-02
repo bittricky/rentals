@@ -29,7 +29,7 @@ export const listingResolvers: IResolvers = {
 
         const viewer = await authorize(db, req);
 
-        if (viewer && viewer._id === listing.host) {
+        if (viewer && viewer._id.toString() === listing.host) {
           listing.authorized = true;
         }
 
@@ -105,7 +105,7 @@ export const listingResolvers: IResolvers = {
       _args: {},
       { db }: { db: Database }
     ): Promise<User> => {
-      const host = await db.users.findOne({ _id: listing.host });
+      const host = await db.users.findOne({ _id: new ObjectId(listing.host) });
 
       if (!host) {
         throw new Error("host wasn't found");
@@ -131,17 +131,14 @@ export const listingResolvers: IResolvers = {
           result: [],
         };
 
-        const query = {
-          _id: { $in: listing.bookings },
-        };
-
-        data.total = await db.bookings.countDocuments(query);
-
         const cursor = db.bookings
-          .find(query)
+          .find({
+            _id: { $in: listing.bookings },
+          })
           .skip(page > 0 ? (page - 1) * limit : 0)
           .limit(limit);
 
+        data.total = await cursor.count();
         data.result = await cursor.toArray();
 
         return data;

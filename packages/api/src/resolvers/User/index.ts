@@ -1,7 +1,8 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { Request } from "express";
+import { ObjectId } from "mongodb";
 import { authorize } from "../../lib/utils";
-import { Database, User, Viewer } from "../../lib/types";
+import { Database, User } from "../../lib/types";
 import {
   UserArgs,
   UserBookingsArgs,
@@ -15,16 +16,21 @@ export const userResolvers: IResolvers = {
     user: async (
       _,
       { id }: UserArgs,
-      { db, req }: { db: Database; req: Request }
+      { db }: { db: Database; }
     ): Promise<User> => {
       try {
-        const user = await db.users.findOne({ _id: id });
+        const user = await db.users.findOne({ _id: new ObjectId(id) });
 
         if (!user) {
           throw new Error("user was not found");
         }
 
-        return user;
+        const userWithAuth: User = {
+          ...user,
+          authorized: false
+        };
+
+        return userWithAuth;
       } catch (error) {
         throw new Error(`Failed to query user: ${error}`);
       }
@@ -32,13 +38,12 @@ export const userResolvers: IResolvers = {
   },
   User: {
     id: (user: User): string => {
-      return user._id;
+      return user._id.toString();
     },
     hasWallet: (user: User): boolean => {
       return Boolean(user.walletId);
     },
     income: (user: User): number | null => {
-      //TODO: fix authorization
       return user.authorized ? user.income : null;
     },
     bookings: async (
@@ -48,7 +53,7 @@ export const userResolvers: IResolvers = {
     ): Promise<UserBookingsData | null> => {
       try {
         const viewer = await authorize(db, req);
-        if (viewer && viewer._id === user._id) {
+        if (viewer && viewer._id.toString() === user._id.toString()) {
           user.authorized = true;
         }
 
@@ -82,7 +87,7 @@ export const userResolvers: IResolvers = {
     ): Promise<UserListingsData | null> => {
       try {
         const viewer = await authorize(db, req);
-        if (viewer && viewer._id === user._id) {
+        if (viewer && viewer._id.toString() === user._id.toString()) {
           user.authorized = true;
         }
 
