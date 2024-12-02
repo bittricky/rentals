@@ -14,7 +14,7 @@ export const agentReviewResolvers: IResolvers = {
         .find({ agent: new ObjectId(agentId) })
         .sort({ createdAt: -1 })
         .toArray();
-    },
+    }
   },
   Mutation: {
     createAgentReview: async (
@@ -47,7 +47,7 @@ export const agentReviewResolvers: IResolvers = {
       const newReview: AgentReview = {
         _id: new ObjectId(),
         agent: new ObjectId(agentId),
-        author: new ObjectId(req.user._id),
+        author: new ObjectId(viewer._id),
         content,
         rating,
         createdAt: new Date().toISOString()
@@ -73,7 +73,7 @@ export const agentReviewResolvers: IResolvers = {
       );
 
       return newReview;
-    },
+    }
   },
   AgentReview: {
     id: (review: AgentReview): string => {
@@ -101,5 +101,5 @@ export const agentReviewResolvers: IResolvers = {
       }
       return agent;
     }
-  },
+  }
 };

@@ -29,62 +29,59 @@ export const propertyReviewResolvers: IResolvers = {
     },
   },
   Mutation: {
-    addPropertyReview: async (
+    createPropertyReview: async (
       _root: undefined,
       {
         listingId,
-        input,
+        content,
+        rating
       }: {
         listingId: string;
-        input: { content: string; rating: number };
+        content: string;
+        rating: number;
       },
-      { db, req }: { db: Database; req: Request }
+      { db, req }: { db: Database; req: { user?: { _id: string } } }
     ): Promise<PropertyReview> => {
-      try {
-        const viewer = await authorize(db, req);
-        if (!viewer) {
-          throw new Error("Viewer cannot be found");
-        }
-
-        const listing = await db.listings.findOne({ _id: new ObjectId(listingId) });
-        if (!listing) {
-          throw new Error("Listing cannot be found");
-        }
-
-        const review: PropertyReview = {
-          _id: new ObjectId(),
-          listing: listing._id,
-          author: new ObjectId(viewer._id),
-          content: input.content,
-          rating: input.rating,
-          createdAt: new Date().toISOString(),
-        };
-
-        await db.propertyReviews.insertOne(review);
-
-        // Update listing with review reference and recalculate average
-        const listingReviews = await db.propertyReviews
-          .find({ listing: listing._id })
-          .toArray();
-        
-        const avgRating = listingReviews.reduce((acc, r) => acc + r.rating, 0) / listingReviews.length;
-
-        await db.listings.updateOne(
-          { _id: listing._id },
-          {
-            $push: { reviews: review._id },
-            $set: {
-              averageRating: avgRating,
-              reviewCount: listingReviews.length,
-            },
-          }
-        );
-
-        return review;
-      } catch (error) {
-        throw new Error(`Failed to add property review: ${error}`);
+      const viewer = await authorize(db, req);
+      if (!viewer) {
+        throw new Error("Viewer cannot be found");
       }
-    },
+
+      const listing = await db.listings.findOne({ _id: new ObjectId(listingId) });
+      if (!listing) {
+        throw new Error("Listing not found");
+      }
+
+      const newReview: PropertyReview = {
+        _id: new ObjectId(),
+        listing: new ObjectId(listingId),
+        author: new ObjectId(viewer._id),
+        content,
+        rating,
+        createdAt: new Date().toISOString()
+      };
+
+      await db.propertyReviews.insertOne(newReview);
+
+      // Update listing's review stats
+      const reviews = await db.propertyReviews
+        .find({ listing: new ObjectId(listingId) })
+        .toArray();
+      
+      const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+      
+      await db.listings.updateOne(
+        { _id: new ObjectId(listingId) },
+        {
+          $set: {
+            averageRating,
+            reviewCount: reviews.length
+          }
+        }
+      );
+
+      return newReview;
+    }
   },
   PropertyReview: {
     id: (review: PropertyReview): string => {

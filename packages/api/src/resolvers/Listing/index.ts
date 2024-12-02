@@ -17,10 +17,10 @@ import {
 export const listingResolvers: IResolvers = {
   Query: {
     listing: async (
-      _: undefined,
+      _root: undefined,
       { id }: ListingArgs,
       { db, req }: { db: Database; req: Request }
-    ) => {
+    ): Promise<Listing> => {
       try {
         const listing = await db.listings.findOne({ _id: new ObjectId(id) });
         if (!listing) {
@@ -28,18 +28,17 @@ export const listingResolvers: IResolvers = {
         }
 
         const viewer = await authorize(db, req);
-
-        if (viewer && viewer._id.toString() === listing.host) {
+        if (viewer && viewer._id.toString() === listing.host.toString()) {
           listing.authorized = true;
         }
 
         return listing;
-      } catch (err) {
-        throw new Error(`Failed to query lisitng: ${err}`);
+      } catch (error) {
+        throw new Error(`Failed to query listing: ${error}`);
       }
     },
     listings: async (
-      _: undefined,
+      _root: undefined,
       { location, filter, limit, page }: ListingsArgs,
       { db }: { db: Database }
     ): Promise<ListingsData> => {
@@ -51,23 +50,15 @@ export const listingResolvers: IResolvers = {
           result: [],
         };
 
-        data.total = await db.listings.countDocuments();
-
         if (location) {
           const { country, admin, city } = await Google.geocode(location);
 
-          if (city) {
-            query.city = city;
-          }
-
-          if (admin) {
-            query.admin = admin;
-          }
-
+          if (city) query.city = city;
+          if (admin) query.admin = admin;
           if (country) {
             query.country = country;
           } else {
-            throw new Error("No Country was found");
+            throw new Error("no country found");
           }
 
           const cityText = city ? `${city}, ` : "";
@@ -75,19 +66,20 @@ export const listingResolvers: IResolvers = {
           data.region = `${cityText}${adminText}${country}`;
         }
 
-        const cursor = db.listings
-          .find(query)
-          .skip(page > 0 ? (page - 1) * limit : 0)
-          .limit(limit);
+        let cursor = db.listings.find(query);
 
         if (filter && filter === ListingsFilters.PRICE_LOW_TO_HIGH) {
-          cursor.sort({ price: 1 }); //1 sorting ascending order
+          cursor = cursor.sort({ price: 1 });
         }
 
         if (filter && filter === ListingsFilters.PRICE_HIGH_TO_LOW) {
-          cursor.sort({ price: -1 }); //-1 sorting descending order
+          cursor = cursor.sort({ price: -1 });
         }
 
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
+
+        data.total = await db.listings.countDocuments(query);
         data.result = await cursor.toArray();
 
         return data;
@@ -105,7 +97,7 @@ export const listingResolvers: IResolvers = {
       _args: {},
       { db }: { db: Database }
     ): Promise<User> => {
-      const host = await db.users.findOne({ _id: new ObjectId(listing.host) });
+      const host = await db.users.findOne({ _id: new ObjectId(listing.host.toString()) });
       if (!host) {
         throw new Error("host can't be found");
       }
@@ -124,20 +116,20 @@ export const listingResolvers: IResolvers = {
           return null;
         }
 
-        const data = {
+        const data: ListingBookingsData = {
           total: 0,
           result: [],
         };
 
         let cursor = db.bookings.find({
-          _id: { $in: listing.bookings },
+          _id: { $in: listing.bookings.map(id => new ObjectId(id)) },
         });
 
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);
 
         data.total = await db.bookings.countDocuments({
-          _id: { $in: listing.bookings },
+          _id: { $in: listing.bookings.map(id => new ObjectId(id)) },
         });
 
         data.result = await cursor.toArray();
@@ -161,18 +153,6 @@ export const listingResolvers: IResolvers = {
       } catch (error) {
         throw new Error(`Failed to query listing reviews: ${error}`);
       }
-    },
-    features: async (
-      listing: Listing,
-      _args: {},
-      { db }: { db: Database }
-    ): Promise<string[]> => {
-      try {
-        const features = await db.features.find({ listing: listing._id }).toArray();
-        return features.map((feature) => feature.name);
-      } catch (error) {
-        throw new Error(`Failed to query listing features: ${error}`);
-      }
-    },
-  },
+    }
+  }
 };
