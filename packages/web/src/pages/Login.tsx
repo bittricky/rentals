@@ -12,22 +12,66 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { GoogleAuthProvider } from '@react-oauth/google';
-import { Link } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
+import { Link, useNavigate } from 'react-router-dom';
+import { gql, useMutation } from '@apollo/client';
+import useAuthStore from '../store/authStore';
+
+const LOGIN = gql`
+  mutation LogIn($input: LogInInput) {
+    logIn(input: $input) {
+      token
+      viewer {
+        id
+        name
+        avatar
+        email
+      }
+    }
+  }
+`;
 
 export default function Login() {
   const toast = useToast();
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
+  const [loginMutation] = useMutation(LOGIN);
 
-  const handleGoogleLogin = async () => {
-    // Implement Google OAuth login
-    toast({
-      title: 'Login Successful',
-      description: 'Welcome back!',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const { data } = await loginMutation({
+          variables: {
+            input: {
+              code: response.code,
+            },
+          },
+        });
+
+        if (data?.logIn) {
+          login(data.logIn.token, data.logIn.viewer);
+          toast({
+            title: 'Login Successful',
+            description: 'Welcome back!',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Login failed:', error);
+        toast({
+          title: 'Login Failed',
+          description: error instanceof Error ? error.message : 'An error occurred during login',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    },
+    flow: 'auth-code',
+  });
 
   return (
     <Container maxW="container.xl" py={16}>
@@ -80,7 +124,10 @@ export default function Login() {
             <Button
               size="lg"
               variant="outline"
-              onClick={handleGoogleLogin}
+              onClick={() => googleLogin()}
+              leftIcon={
+                <Box as="img" src="/google.svg" alt="Google" w={5} h={5} />
+              }
               w="full"
             >
               Continue with Google
