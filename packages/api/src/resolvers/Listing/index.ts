@@ -1,7 +1,7 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { ObjectId } from "mongodb";
 import { Request } from "express";
-import { Database, Listing, User } from "../../lib/types";
+import { Database, Listing, User, PropertyReview } from "../../lib/types";
 import { Google } from "../../lib/api";
 import { authorize } from "../../lib/utils";
 import {
@@ -106,11 +106,9 @@ export const listingResolvers: IResolvers = {
       { db }: { db: Database }
     ): Promise<User> => {
       const host = await db.users.findOne({ _id: new ObjectId(listing.host) });
-
       if (!host) {
-        throw new Error("host wasn't found");
+        throw new Error("host can't be found");
       }
-
       return host;
     },
     bookingsIndex: (listing: Listing): string => {
@@ -126,24 +124,54 @@ export const listingResolvers: IResolvers = {
           return null;
         }
 
-        const data: ListingBookingsData = {
+        const data = {
           total: 0,
           result: [],
         };
 
-        const cursor = db.bookings
-          .find({
-            _id: { $in: listing.bookings },
-          })
-          .skip(page > 0 ? (page - 1) * limit : 0)
-          .limit(limit);
+        let cursor = db.bookings.find({
+          _id: { $in: listing.bookings },
+        });
 
-        data.total = await cursor.count();
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
+
+        data.total = await db.bookings.countDocuments({
+          _id: { $in: listing.bookings },
+        });
+
         data.result = await cursor.toArray();
 
         return data;
       } catch (error) {
         throw new Error(`Failed to query listing bookings: ${error}`);
+      }
+    },
+    reviews: async (
+      listing: Listing,
+      _args: {},
+      { db }: { db: Database }
+    ): Promise<PropertyReview[]> => {
+      try {
+        const reviews = await db.propertyReviews
+          .find({ listing: listing._id })
+          .sort({ createdAt: -1 })
+          .toArray();
+        return reviews;
+      } catch (error) {
+        throw new Error(`Failed to query listing reviews: ${error}`);
+      }
+    },
+    features: async (
+      listing: Listing,
+      _args: {},
+      { db }: { db: Database }
+    ): Promise<string[]> => {
+      try {
+        const features = await db.features.find({ listing: listing._id }).toArray();
+        return features.map((feature) => feature.name);
+      } catch (error) {
+        throw new Error(`Failed to query listing features: ${error}`);
       }
     },
   },

@@ -6,7 +6,7 @@ export const propertyReviews: PropertyReview[] = [
   {
     _id: new ObjectId(),
     listing: new ObjectId("5d378db94e84753160e08b30"),
-    author: new ObjectId("5d378db94e84753160e08b59"),  // Sarah K.
+    author: new ObjectId("5d378db94e84753160e08b59"),
     content: "Amazing location and very clean apartment. Perfect for our weekend stay!",
     rating: 5,
     createdAt: "2024-01-15T08:45:00Z",
@@ -14,26 +14,34 @@ export const propertyReviews: PropertyReview[] = [
   {
     _id: new ObjectId(),
     listing: new ObjectId("5d378db94e84753160e08b31"),
-    author: new ObjectId("5d378db94e84753160e08b58"),  // Danielle C.
+    author: new ObjectId("5d378db94e84753160e08b58"),
     content: "Great studio for solo travelers. Very affordable and well-maintained.",
     rating: 4.5,
     createdAt: "2024-01-10T15:30:00Z",
   },
   {
     _id: new ObjectId(),
-    listing: new ObjectId("5d378db94e84753160e08b40"),
-    author: new ObjectId("5d378db94e84753160e08b57"),  // Andrew D.
-    content: "Absolutely stunning property! The pool and wine cellar were highlights of our stay.",
+    listing: new ObjectId("5d378db94e84753160e08b32"),
+    author: new ObjectId("5d378db94e84753160e08b57"),
+    content: "Beautiful house with amazing amenities. The pool was a great bonus!",
     rating: 5,
-    createdAt: "2024-01-05T12:15:00Z",
+    createdAt: "2024-01-05T10:15:00Z",
   },
   {
     _id: new ObjectId(),
-    listing: new ObjectId("5d378db94e84753160e08b46"),
-    author: new ObjectId("5d378db94e84753160e08b56"),  // Elizabeth A.
-    content: "Beautiful home in a perfect location. The garden is absolutely gorgeous!",
+    listing: new ObjectId("5d378db94e84753160e08b33"),
+    author: new ObjectId("5d378db94e84753160e08b56"),
+    content: "Location was perfect but the apartment needed some maintenance.",
+    rating: 3.5,
+    createdAt: "2024-01-02T14:20:00Z",
+  },
+  {
+    _id: new ObjectId(),
+    listing: new ObjectId("5d378db94e84753160e08b34"),
+    author: new ObjectId("5d378db94e84753160e08b55"),
+    content: "Spacious and modern. Great for family gatherings!",
     rating: 4.8,
-    createdAt: "2024-01-20T09:20:00Z",
+    createdAt: "2023-12-28T11:00:00Z",
   }
 ];
 
@@ -41,26 +49,26 @@ export const propertyReviews: PropertyReview[] = [
 export const agentReviews: AgentReview[] = [
   {
     _id: new ObjectId(),
-    agent: new ObjectId("5d378db94e84753160e08c01"),  // James J.
-    author: new ObjectId("5d378db94e84753160e08b58"),  // Danielle C.
-    content: "James was incredibly professional and found us exactly what we were looking for. Highly recommend!",
+    agent: new ObjectId("5d378db94e84753160e08b57"),
+    author: new ObjectId("5d378db94e84753160e08b59"),
+    content: "Very professional and responsive. Made the rental process smooth.",
     rating: 5,
-    createdAt: "2024-01-12T10:30:00Z",
+    createdAt: "2024-01-14T09:30:00Z",
   },
   {
     _id: new ObjectId(),
-    agent: new ObjectId("5d378db94e84753160e08c02"),  // Elizabeth A.
-    author: new ObjectId("5d378db94e84753160e08b59"),  // Sarah K.
-    content: "Elizabeth's knowledge of modern homes and condos is exceptional. She made our first-time buying experience smooth.",
+    agent: new ObjectId("5d378db94e84753160e08b55"),
+    author: new ObjectId("5d378db94e84753160e08b58"),
+    content: "Quick to respond and very knowledgeable about the area.",
+    rating: 4.5,
+    createdAt: "2024-01-08T16:45:00Z",
+  },
+  {
+    _id: new ObjectId(),
+    agent: new ObjectId("5d378db94e84753160e08b56"),
+    author: new ObjectId("5d378db94e84753160e08b57"),
+    content: "Helped us find the perfect rental within our budget.",
     rating: 4.8,
-    createdAt: "2024-01-08T14:45:00Z",
-  },
-  {
-    _id: new ObjectId(),
-    agent: new ObjectId("5d378db94e84753160e08c03"),  // Andrew D.
-    author: new ObjectId("5d378db94e84753160e08b56"),  // Elizabeth A.
-    content: "Andrew's expertise in beach properties really showed. He found us the perfect vacation rental.",
-    rating: 4.7,
-    createdAt: "2024-01-18T11:20:00Z",
+    createdAt: "2024-01-03T13:20:00Z",
   }
 ];

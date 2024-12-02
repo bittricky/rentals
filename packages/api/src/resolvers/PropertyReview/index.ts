@@ -1,7 +1,7 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { ObjectId } from "mongodb";
 import { Database, PropertyReview, Listing, User } from "../../lib/types";
-import { authorize } from "../utils";
+import { authorize } from "../../lib/utils";
 
 export const propertyReviewResolvers: IResolvers = {
   Query: {
@@ -87,28 +87,30 @@ export const propertyReviewResolvers: IResolvers = {
     },
   },
   PropertyReview: {
-    id: (review: PropertyReview): string => review._id.toString(),
-    listing: async (
-      review: PropertyReview,
-      _args: {},
-      { db }: { db: Database }
-    ): Promise<Listing> => {
-      const listing = await db.listings.findOne({ _id: review.listing });
-      if (!listing) {
-        throw new Error("Listing cannot be found");
-      }
-      return listing;
+    id: (review: PropertyReview): string => {
+      return review._id.toString();
     },
     author: async (
       review: PropertyReview,
       _args: {},
       { db }: { db: Database }
     ): Promise<User> => {
-      const user = await db.users.findOne({ _id: review.author });
-      if (!user) {
-        throw new Error("User cannot be found");
+      const author = await db.users.findOne({ _id: new ObjectId(review.author) });
+      if (!author) {
+        throw new Error("Author not found");
       }
-      return user;
+      return author;
     },
+    listing: async (
+      review: PropertyReview,
+      _args: {},
+      { db }: { db: Database }
+    ): Promise<Listing> => {
+      const listing = await db.listings.findOne({ _id: new ObjectId(review.listing) });
+      if (!listing) {
+        throw new Error("Listing not found");
+      }
+      return listing;
+    }
   },
 };

@@ -1,5 +1,5 @@
 import { IResolvers } from "@graphql-tools/utils";
-import { Database, Agent, User } from "../../lib/types";
+import { Database, Agent, User, AgentReview } from "../../lib/types";
 import { AgentsArgs, AgentArgs } from "./types";
 import { ObjectId } from "mongodb";
 
@@ -56,6 +56,21 @@ export const agentResolvers: IResolvers = {
         throw new Error(`Failed to query user: ${error}`);
       }
     },
+    reviews: async (
+      agent: Agent,
+      _args: {},
+      { db }: { db: Database }
+    ): Promise<AgentReview[]> => {
+      try {
+        const reviews = await db.agentReviews
+          .find({ agent: agent._id })
+          .sort({ createdAt: -1 })
+          .toArray();
+        return reviews;
+      } catch (error) {
+        throw new Error(`Failed to query agent reviews: ${error}`);
+      }
+    }
   },
   User: {
     isAgent: async (user: User, _args: {}, { db }: { db: Database }): Promise<boolean> => {
