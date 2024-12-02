@@ -3,8 +3,7 @@ import { User } from "../src/lib/types";
 
 export const users: User[] = [
   {
-    _id: "5d378db94e84753160e08b55",
-    token: "token_************",
+    _id: new ObjectId("5d378db94e84753160e08b55"),
     name: "James J.",
     avatar:
       "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560648533/mock/users/user-profile-1_mawp12.jpg",
@@ -19,8 +18,7 @@ export const users: User[] = [
     ],
   },
   {
-    _id: "5d378db94e84753160e08b56",
-    token: "token_************",
+    _id: new ObjectId("5d378db94e84753160e08b56"),
     name: "Elizabeth A.",
     avatar:
       "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560649052/mock/users/user-profile-2_arwtdy.jpg",
@@ -44,8 +42,7 @@ export const users: User[] = [
     ],
   },
   {
-    _id: "5d378db94e84753160e08b57",
-    token: "token_************",
+    _id: new ObjectId("5d378db94e84753160e08b57"),
     name: "Andrew D.",
     avatar:
       "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560649280/mock/users/user-profile-3_omxctk.jpg",
@@ -67,8 +64,7 @@ export const users: User[] = [
     ],
   },
   {
-    _id: "5d378db94e84753160e08b58",
-    token: "token_************",
+    _id: new ObjectId("5d378db94e84753160e08b58"),
     name: "Danielle C.",
     avatar:
       "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560650165/mock/users/user-profile-4_wxi6om.jpg",
@@ -83,8 +79,7 @@ export const users: User[] = [
     ],
   },
   {
-    _id: "5d378db94e84753160e08b59",
-    token: "token_************",
+    _id: new ObjectId("5d378db94e84753160e08b59"),
     name: "Sarah K.",
     avatar:
       "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560650436/mock/users/user-profile-5_tm8hhl.jpg",
