@@ -1,5 +1,38 @@
 import { ObjectId } from "mongodb";
-import { Listing, ListingType } from "../src/lib/types";
+import { Listing, ListingType, Feature } from "../src/lib/types";
+
+const commonFeatures: { [key: string]: Feature } = {
+  internet: {
+    name: "High-speed Internet",
+    icon: "wifi",
+    description: "Fast and reliable fiber internet connection"
+  },
+  smartHome: {
+    name: "Smart Home System",
+    icon: "tv",
+    description: "Integrated smart home controls and entertainment system"
+  },
+  airCon: {
+    name: "Air Conditioning",
+    icon: "wind",
+    description: "Central air conditioning system"
+  },
+  heating: {
+    name: "Central Heating",
+    icon: "snowflake",
+    description: "Energy-efficient heating system"
+  },
+  security: {
+    name: "Security System",
+    icon: "shield",
+    description: "24/7 security monitoring and smart locks"
+  },
+  storage: {
+    name: "Storage Space",
+    icon: "warehouse",
+    description: "Additional storage space available"
+  }
+};
 
 export const listings: Listing[] = [
   {
@@ -23,7 +56,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b31"),
@@ -46,7 +83,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b32"),
@@ -69,7 +110,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b33"),
@@ -92,7 +137,16 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b34"),
@@ -115,7 +169,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b35"),
@@ -138,7 +196,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b36"),
@@ -161,7 +223,11 @@ export const listings: Listing[] = [
     bathrooms: 3,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b37"),
@@ -184,7 +250,16 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b38"),
@@ -207,7 +282,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b39"),
@@ -230,7 +309,16 @@ export const listings: Listing[] = [
     bathrooms: 4,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3a"),
@@ -253,7 +341,16 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3b"),
@@ -276,7 +373,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3c"),
@@ -299,7 +400,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3d"),
@@ -322,7 +427,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3e"),
@@ -345,7 +454,16 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3f"),
@@ -368,7 +486,11 @@ export const listings: Listing[] = [
     bathrooms: 3,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b40"),
@@ -391,7 +513,16 @@ export const listings: Listing[] = [
     bathrooms: 3,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b41"),
@@ -414,7 +545,16 @@ export const listings: Listing[] = [
     bathrooms: 5,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b42"),
@@ -436,7 +576,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b43"),
@@ -459,7 +603,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b44"),
@@ -482,7 +630,11 @@ export const listings: Listing[] = [
     bathrooms: 3,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b45"),
@@ -505,7 +657,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b46"),
@@ -528,7 +684,16 @@ export const listings: Listing[] = [
     bathrooms: 3,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b47"),
@@ -551,7 +716,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b48"),
@@ -574,7 +743,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b49"),
@@ -597,7 +770,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4a"),
@@ -620,7 +797,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4b"),
@@ -643,7 +824,16 @@ export const listings: Listing[] = [
     bathrooms: 5,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [
+      commonFeatures.internet,
+      commonFeatures.smartHome,
+      commonFeatures.security,
+      commonFeatures.airCon
+    ],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4c"),
@@ -666,7 +856,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4d"),
@@ -689,7 +883,11 @@ export const listings: Listing[] = [
     bathrooms: 3,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4e"),
@@ -712,7 +910,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4f"),
@@ -735,7 +937,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b50"),
@@ -758,7 +964,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b51"),
@@ -781,7 +991,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b52"),
@@ -804,7 +1018,11 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b53"),
@@ -827,7 +1045,11 @@ export const listings: Listing[] = [
     bathrooms: 2,
     swimmingPools: 0,
     pantries: 1,
-    authorized: false
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.airCon, commonFeatures.heating],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b54"),
@@ -850,6 +1072,10 @@ export const listings: Listing[] = [
     bathrooms: 1,
     swimmingPools: 1,
     pantries: 1,
-    authorized: false
-  },
+    authorized: false,
+    features: [commonFeatures.internet, commonFeatures.smartHome],
+    reviews: [],
+    averageRating: 0,
+    reviewCount: 0
+  }
 ];
