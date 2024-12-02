@@ -45,9 +45,13 @@ export interface Listing {
   admin: string;
   city: string;
   bookings: ObjectId[];
-  bookingsIndex: BookingIndex; //TODO: find a more robust solution to handle date time then using an hash map
+  bookingsIndex: BookingIndex;
   price: number;
   numOfGuests: number;
+  bedrooms: number;
+  bathrooms: number;
+  swimmingPools: number;
+  pantries: number;
   authorized: boolean;
 }
 

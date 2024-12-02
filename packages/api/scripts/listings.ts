@@ -19,6 +19,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 12424,
     numOfGuests: 3,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b31"),
@@ -37,6 +42,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 15806,
     numOfGuests: 3,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b32"),
@@ -55,6 +65,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 4055,
     numOfGuests: 2,
+    bedrooms: 4,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b33"),
@@ -73,6 +88,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 21292,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b34"),
@@ -91,6 +111,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 20930,
     numOfGuests: 5,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b35"),
@@ -109,6 +134,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 16836,
     numOfGuests: 2,
+    bedrooms: 3,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b36"),
@@ -127,6 +157,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 2577,
     numOfGuests: 1,
+    bedrooms: 4,
+    bathrooms: 3,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b37"),
@@ -145,6 +180,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 23903,
     numOfGuests: 4,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b38"),
@@ -163,6 +203,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 21982,
     numOfGuests: 3,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b39"),
@@ -181,6 +226,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 18126,
     numOfGuests: 5,
+    bedrooms: 4,
+    bathrooms: 4,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3a"),
@@ -199,6 +249,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 16162,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3b"),
@@ -217,6 +272,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 11688,
     numOfGuests: 5,
+    bedrooms: 3,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3c"),
@@ -235,6 +295,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 16843,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3d"),
@@ -253,6 +318,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 3078,
     numOfGuests: 5,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3e"),
@@ -271,6 +341,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 12127,
     numOfGuests: 2,
+    bedrooms: 1,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b3f"),
@@ -289,6 +364,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 19242,
     numOfGuests: 2,
+    bedrooms: 3,
+    bathrooms: 3,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b40"),
@@ -307,6 +387,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 18127,
     numOfGuests: 2,
+    bedrooms: 4,
+    bathrooms: 3,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b41"),
@@ -325,6 +410,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 22707,
     numOfGuests: 5,
+    bedrooms: 6,
+    bathrooms: 5,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b42"),
@@ -342,6 +432,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 11845,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b43"),
@@ -360,6 +455,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 13623,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b44"),
@@ -378,6 +478,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 6879,
     numOfGuests: 3,
+    bedrooms: 3,
+    bathrooms: 3,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b45"),
@@ -396,6 +501,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 14879,
     numOfGuests: 5,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b46"),
@@ -414,6 +524,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 2778,
     numOfGuests: 5,
+    bedrooms: 4,
+    bathrooms: 3,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b47"),
@@ -432,6 +547,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 17777,
     numOfGuests: 3,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b48"),
@@ -450,6 +570,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 19462,
     numOfGuests: 1,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b49"),
@@ -468,6 +593,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 9425,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4a"),
@@ -486,6 +616,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 1918,
     numOfGuests: 1,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4b"),
@@ -497,13 +632,18 @@ export const listings: Listing[] = [
     host: "5d378db94e84753160e08b55",
     type: ListingType.House,
     address: "200 South Bend River Rd, London, United Kingdom",
-    country: "United States",
+    country: "United Kingdom",
     admin: "England",
     city: "London",
     bookings: [],
     bookingsIndex: {},
     price: 11349,
     numOfGuests: 5,
+    bedrooms: 7,
+    bathrooms: 5,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4c"),
@@ -522,6 +662,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 23483,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4d"),
@@ -540,6 +685,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 8721,
     numOfGuests: 4,
+    bedrooms: 4,
+    bathrooms: 3,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4e"),
@@ -558,6 +708,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 5884,
     numOfGuests: 1,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b4f"),
@@ -576,6 +731,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 19649,
     numOfGuests: 4,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b50"),
@@ -594,6 +754,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 22501,
     numOfGuests: 5,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b51"),
@@ -612,6 +777,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 4051,
     numOfGuests: 5,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b52"),
@@ -630,6 +800,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 9162,
     numOfGuests: 2,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b53"),
@@ -648,6 +823,11 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 24842,
     numOfGuests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    swimmingPools: 0,
+    pantries: 1,
+    authorized: false
   },
   {
     _id: new ObjectId("5d378db94e84753160e08b54"),
@@ -666,5 +846,10 @@ export const listings: Listing[] = [
     bookingsIndex: {},
     price: 23012,
     numOfGuests: 1,
+    bedrooms: 1,
+    bathrooms: 1,
+    swimmingPools: 1,
+    pantries: 1,
+    authorized: false
   },
 ];
