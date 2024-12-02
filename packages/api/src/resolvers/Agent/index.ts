@@ -1,6 +1,13 @@
 import { IResolvers } from "@graphql-tools/utils";
-import { Database, Agent, User, AgentReview } from "../../lib/types";
-import { AgentsArgs, AgentArgs, AgentReviewsArgs } from "./types";
+import { Database, Agent, User } from "../../lib/types";
+import { 
+  AgentsArgs, 
+  AgentArgs, 
+  AgentReviewsArgs,
+  ReviewsArgs,
+  AgentReviewsData,
+  AgentsData 
+} from "./types";
 import { ObjectId } from "mongodb";
 
 export const agentResolvers: IResolvers = {
@@ -9,7 +16,7 @@ export const agentResolvers: IResolvers = {
       _root: undefined,
       { limit, page }: AgentsArgs,
       { db }: { db: Database }
-    ): Promise<{ total: number; result: Agent[] }> => {
+    ): Promise<AgentsData> => {
       try {
         const data = await db.agents
           .find({})
@@ -46,7 +53,7 @@ export const agentResolvers: IResolvers = {
       _root: undefined,
       { agentId, limit, page }: AgentReviewsArgs,
       { db }: { db: Database }
-    ): Promise<{ total: number; result: AgentReview[] }> => {
+    ): Promise<AgentReviewsData> => {
       try {
         const data = await db.agentReviews
           .find({ agent: new ObjectId(agentId) })
@@ -81,9 +88,9 @@ export const agentResolvers: IResolvers = {
     },
     reviews: async (
       agent: Agent,
-      { limit = 10, page = 1 }: { limit?: number; page?: number },
+      { limit, page }: ReviewsArgs,
       { db }: { db: Database }
-    ): Promise<{ total: number; result: AgentReview[] }> => {
+    ): Promise<AgentReviewsData> => {
       try {
         const data = await db.agentReviews
           .find({ agent: agent._id })
