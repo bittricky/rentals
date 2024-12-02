@@ -3,6 +3,8 @@ import { Collection, ObjectId } from "mongodb";
 export enum ListingType {
   Apartment = "APARTMENT",
   House = "HOUSE",
+  Condo = "CONDO",
+  Villa = "VILLA",
 }
 
 export interface Viewer {
@@ -55,21 +57,41 @@ export interface Listing {
   authorized: boolean;
 }
 
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
+export interface Agent {
+  _id: ObjectId;
+  user: ObjectId;
+  license: string;
+  agency: string;
+  experience: number;
+  specializations: string[];
+  ratings: number;
+  reviewCount: number;
+}
+
 export interface User {
   _id: ObjectId;
   name: string;
   avatar: string;
   contact: string;
+  phone?: string;
   token?: string;
   walletId?: string;
   income: number;
   bookings: ObjectId[];
   listings: ObjectId[];
   authorized?: boolean;
+  isAgent?: boolean;
+  agentProfile?: ObjectId;
 }
 
 export interface Database {
   bookings: Collection<Booking>;
   listings: Collection<Listing>;
   users: Collection<User>;
+  agents: Collection<Agent>;
 }

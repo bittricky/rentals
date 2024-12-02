@@ -10,6 +10,7 @@ import {
   UserListingsArgs,
   UserListingsData,
 } from "./types";
+import { ContactHostInput, ContactHostResponse } from "./types";
 
 export const userResolvers: IResolvers = {
   Query: {
@@ -35,6 +36,37 @@ export const userResolvers: IResolvers = {
         throw new Error(`Failed to query user: ${error}`);
       }
     },
+  },
+  Mutation: {
+    contactHost: async (
+      _,
+      { input }: { input: ContactHostInput },
+      { db }: { db: Database }
+    ): Promise<ContactHostResponse> => {
+      try {
+        const host = await db.users.findOne({ _id: new ObjectId(input.hostId) });
+        const listing = await db.listings.findOne({ _id: new ObjectId(input.listingId) });
+
+        if (!host || !listing) {
+          throw new Error("Host or listing not found");
+        }
+
+        // In a real application, you would:
+        // 1. Send an email to the host
+        // 2. Store the contact request in the database
+        // 3. Potentially create a conversation/thread
+
+        return {
+          success: true,
+          message: "Contact request sent successfully"
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: `Failed to contact host: ${error}`
+        };
+      }
+    }
   },
   User: {
     id: (user: User): string => {
