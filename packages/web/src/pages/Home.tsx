@@ -1,99 +1,136 @@
 import {
   Box,
-  Button,
   Container,
   Grid,
+  HStack,
   Heading,
   Text,
   VStack,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
+import { useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import PropertyCard from '../components/PropertyCard';
+import { FEATURED_LISTINGS } from '../lib/graphql/queries';
+import { ListingsFilter } from '../lib/graphql/types';
+import { Listings as ListingsData } from '../lib/graphql/types';
 
-const FEATURED_PROPERTIES = [
-  {
-    id: '1',
-    title: 'Modern Beachfront Villa',
-    type: 'House',
-    location: 'Miami Beach, FL',
-    price: 550335,
-    bedrooms: 5,
-    bathrooms: 3,
-    swimmingPools: 2,
-    pantries: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=800&h=500',
-  },
-  {
-    id: '2',
-    title: 'Luxury Downtown Penthouse',
-    type: 'Apartment',
-    location: 'New York, NY',
-    price: 750000,
-    bedrooms: 3,
-    bathrooms: 2,
-    swimmingPools: 1,
-    pantries: 1,
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800&h=500',
-  },
-  {
-    id: '3',
-    title: 'Suburban Family Home',
-    type: 'House',
-    location: 'Austin, TX',
-    price: 450000,
-    bedrooms: 4,
-    bathrooms: 3,
-    swimmingPools: 1,
-    pantries: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800&h=500',
-  },
-];
+interface FeaturedListingsVars {
+  limit: number;
+}
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const { data, loading, error } = useQuery<{ listings: ListingsData }, FeaturedListingsVars>(
+    FEATURED_LISTINGS,
+    {
+      variables: {
+        limit: 3,
+      },
+    }
+  );
+
+  const handleSearch = (
+    location: string,
+    propertyType: string | undefined,
+    priceRange: { min: number; max: number } | undefined
+  ) => {
+    const searchParams = new URLSearchParams();
+    
+    if (location) searchParams.set('location', location);
+    if (propertyType) searchParams.set('type', propertyType);
+    if (priceRange) {
+      searchParams.set('minPrice', priceRange.min.toString());
+      searchParams.set('maxPrice', priceRange.max.toString());
+    }
+    
+    navigate({
+      pathname: '/listings',
+      search: searchParams.toString()
+    });
+  };
+
+  const handleFilterChange = () => {
+    // No-op for home page as we don't need sorting here
+  };
+
   return (
     <Box>
       {/* Hero Section */}
-      <Box
-        bg="brand.600"
-        color="white"
-        py={{ base: 16, md: 24 }}
-        px={4}
-      >
+      <Box bg="brand.600" py={12}>
         <Container maxW="container.xl">
-          <VStack spacing={8} align="stretch" maxW="2xl" mx="auto" textAlign="center">
-            <Heading size="2xl">
-              Find Your Dream Home
-            </Heading>
+          <VStack spacing={4} textAlign="center" color="white">
+            <Heading size="2xl">Find Your Dream Home</Heading>
             <Text fontSize="xl">
               Discover the perfect property in your favorite location
             </Text>
-            <SearchBar />
           </VStack>
         </Container>
       </Box>
 
-      {/* Featured Properties */}
-      <Container maxW="container.xl" py={16}>
-        <VStack spacing={12} align="stretch">
+      {/* Search Section */}
+      <Box bg="brand.600" py={8} borderBottomWidth="1px" borderColor="gray.200">
+        <Container maxW="container.xl">
           <Box>
-            <Heading size="xl" mb={4}>
-              Featured Properties
-            </Heading>
-            <Grid
-              templateColumns={{
-                base: '1fr',
-                md: 'repeat(2, 1fr)',
-                lg: 'repeat(3, 1fr)',
-              }}
-              gap={8}
-            >
-              {FEATURED_PROPERTIES.map((property) => (
-                <PropertyCard key={property.id} property={property} />
-              ))}
-            </Grid>
+            <HStack spacing={4}>
+              <Box flex={1}>
+                <SearchBar 
+                  onSearch={handleSearch}
+                  handleFilterChange={handleFilterChange}
+                  currentFilter={ListingsFilter.PRICE_HIGH_TO_LOW}
+                />
+              </Box>
+            </HStack>
           </Box>
-        </VStack>
-      </Container>
+        </Container>
+      </Box>
+
+      {/* Featured Properties */}
+      <Box py={16}>
+        <Container maxW="container.xl">
+          <VStack spacing={8} align="stretch">
+            <Heading size="xl">Featured Properties</Heading>
+            {loading ? (
+              <Center py={8}>
+                <Spinner size="xl" color="brand.500" />
+              </Center>
+            ) : error ? (
+              <Center py={8}>
+                <Text color="red.500">Unable to load featured properties</Text>
+              </Center>
+            ) : (
+              <Grid
+                templateColumns={{
+                  base: '1fr',
+                  md: 'repeat(2, 1fr)',
+                  lg: 'repeat(3, 1fr)',
+                }}
+                gap={8}
+              >
+                {data?.listings.result.map((listing) => (
+                  <PropertyCard
+                    key={listing.id}
+                    id={listing.id}
+                    title={listing.title}
+                    type={listing.type}
+                    location={`${listing.city}, ${listing.admin}`}
+                    price={listing.price}
+                    bedrooms={listing.bedrooms}
+                    bathrooms={listing.bathrooms}
+                    swimmingPools={listing.swimmingPools}
+                    pantries={listing.pantries}
+                    imageUrl={listing.image}
+                    averageRating={listing.averageRating}
+                  />
+                ))}
+              </Grid>
+            )}
+          </VStack>
+        </Container>
+      </Box>
     </Box>
   );
 }

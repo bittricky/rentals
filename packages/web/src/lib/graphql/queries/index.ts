@@ -257,3 +257,45 @@ export const AGENT_REVIEWS = gql`
     }
   }
 `;
+
+export const FEATURED_LISTINGS = gql`
+  query FeaturedListings($limit: Int!) {
+    listings(
+      filter: PRICE_HIGH_TO_LOW
+      limit: $limit
+      page: 1
+    ) {
+      total
+      result {
+        id
+        title
+        description
+        image
+        host {
+          id
+          name
+          avatar
+          hasWallet
+        }
+        country
+        admin
+        city
+        type
+        address
+        price
+        numOfGuests
+        bedrooms
+        bathrooms
+        swimmingPools
+        pantries
+        features {
+          name
+          icon
+          description
+        }
+        averageRating
+        reviewCount
+      }
+    }
+  }
+`;

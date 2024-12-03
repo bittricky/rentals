@@ -4,7 +4,6 @@ import {
   Grid,
   HStack,
   Heading,
-  Select,
   Text,
   Center,
   Spinner,
