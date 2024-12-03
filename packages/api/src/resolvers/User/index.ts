@@ -1,7 +1,7 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { Request } from "express";
 import { ObjectId } from "mongodb";
-import { authorize } from "../../lib/utils";
+import { createIdFilter, idToString, authorize } from "../../lib/utils";
 import { Database, User } from "../../lib/types";
 import {
   UserArgs,
@@ -17,21 +17,21 @@ export const userResolvers: IResolvers = {
     user: async (
       _,
       { id }: UserArgs,
-      { db }: { db: Database; }
+      { db, req }: { db: Database; req: Request }
     ): Promise<User> => {
       try {
-        const user = await db.users.findOne({ _id: new ObjectId(id) });
+        const user = await db.users.findOne(createIdFilter(id));
 
         if (!user) {
           throw new Error("user was not found");
         }
 
-        const userWithAuth: User = {
-          ...user,
-          authorized: false
-        };
+        const viewer = await authorize(db, req);
+        if (viewer && viewer._id === user._id) {
+          user.authorized = true;
+        }
 
-        return userWithAuth;
+        return user;
       } catch (error) {
         throw new Error(`Failed to query user: ${error}`);
       }
@@ -41,52 +41,61 @@ export const userResolvers: IResolvers = {
     contactHost: async (
       _,
       { input }: { input: ContactHostInput },
-      { db }: { db: Database }
+      { db, req }: { db: Database; req: Request }
     ): Promise<ContactHostResponse> => {
       try {
-        const host = await db.users.findOne({ _id: new ObjectId(input.hostId) });
+        const viewer = await authorize(db, req);
+        if (!viewer) {
+          throw new Error("viewer not found");
+        }
+
+        const host = await db.users.findOne(createIdFilter(input.hostId));
         const listing = await db.listings.findOne({ _id: new ObjectId(input.listingId) });
 
         if (!host || !listing) {
           throw new Error("Host or listing not found");
         }
 
-        // In a real application, you would:
-        // 1. Send an email to the host
-        // 2. Store the contact request in the database
-        // 3. Potentially create a conversation/thread
+        // Send email or notification to host
+        console.log(`Contact request from ${input.name} (${input.email}) to host ${idToString(host._id)}`);
+        console.log(`Message: ${input.message}`);
 
         return {
           success: true,
           message: "Contact request sent successfully"
         };
       } catch (error) {
+        console.error("Failed to contact host:", error);
         return {
           success: false,
-          message: `Failed to contact host: ${error}`
+          message: "Failed to send contact request"
         };
       }
     }
   },
   User: {
-    id: (user: User): string => {
-      return user._id.toString();
+    id(user: User): string {
+      return idToString(user._id);
     },
-    hasWallet: (user: User): boolean => {
+    hasWallet(user: User): boolean {
       return Boolean(user.walletId);
     },
-    income: (user: User): number | null => {
-      return user.authorized ? user.income : null;
+    income(user: User): number | null {
+      return user.income;
     },
-    bookings: async (
+    async bookings(
       user: User,
       { limit, page }: UserBookingsArgs,
       { db, req }: { db: Database; req: Request }
-    ): Promise<UserBookingsData | null> => {
+    ): Promise<UserBookingsData | null> {
       try {
         const viewer = await authorize(db, req);
-        if (viewer && viewer._id.toString() === user._id.toString()) {
-          user.authorized = true;
+        if (!viewer || viewer._id !== user._id) {
+          throw new Error("not authorized");
+        }
+
+        if (!user.bookings) {
+          return null;
         }
 
         const data: UserBookingsData = {
@@ -94,17 +103,14 @@ export const userResolvers: IResolvers = {
           result: [],
         };
 
-        const query = {
-          _id: { $in: user.bookings },
-        };
-
-        data.total = await db.bookings.countDocuments(query);
-
         const cursor = db.bookings
-          .find(query)
+          .find({
+            _id: { $in: user.bookings }
+          })
           .skip(page > 0 ? (page - 1) * limit : 0)
           .limit(limit);
 
+        data.total = await cursor.count();
         data.result = await cursor.toArray();
 
         return data;
@@ -112,15 +118,15 @@ export const userResolvers: IResolvers = {
         throw new Error(`Failed to query user bookings: ${error}`);
       }
     },
-    listings: async (
+    async listings(
       user: User,
       { limit, page }: UserListingsArgs,
       { db, req }: { db: Database; req: Request }
-    ): Promise<UserListingsData | null> => {
+    ): Promise<UserListingsData | null> {
       try {
         const viewer = await authorize(db, req);
-        if (viewer && viewer._id.toString() === user._id.toString()) {
-          user.authorized = true;
+        if (!viewer || viewer._id !== user._id) {
+          throw new Error("not authorized");
         }
 
         const data: UserListingsData = {
@@ -128,23 +134,20 @@ export const userResolvers: IResolvers = {
           result: [],
         };
 
-        const query = {
-          _id: { $in: user.listings },
-        };
+        let cursor = db.listings.find({
+          _id: { $in: user.listings }
+        });
 
-        data.total = await db.listings.countDocuments(query);
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
 
-        const cursor = db.listings
-          .find(query)
-          .skip(page > 0 ? (page - 1) * limit : 0)
-          .limit(limit);
-
+        data.total = await cursor.count();
         data.result = await cursor.toArray();
 
         return data;
       } catch (error) {
         throw new Error(`Failed to query user listings: ${error}`);
       }
-    },
+    }
   },
 };

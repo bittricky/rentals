@@ -8,7 +8,7 @@ export enum ListingType {
 }
 
 export interface Viewer {
-  _id?: string;
+  _id?: string | ObjectId;
   token?: string;
   avatar?: string;
   walletId?: string;
@@ -30,7 +30,7 @@ export interface BookingIndex {
 export interface Booking {
   _id: ObjectId;
   listing: ObjectId;
-  tenant: string;
+  tenant: string | ObjectId;
   checkIn: string;
   checkOut: string;
 }
@@ -63,7 +63,7 @@ export interface Listing {
   title: string;
   description: string;
   image: string;
-  host: string;
+  host: string | ObjectId;
   type: ListingType;
   address: string;
   country: string;
@@ -101,7 +101,7 @@ export interface Agent {
 }
 
 export interface User {
-  _id: ObjectId;
+  _id: string | ObjectId;
   name: string;
   avatar: string;
   contact: string;

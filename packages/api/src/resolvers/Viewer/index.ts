@@ -1,10 +1,10 @@
-import jwt from "jsonwebtoken";
-import { Request } from "express";
 import { IResolvers } from "@graphql-tools/utils";
-import { ObjectId } from "mongodb";
+import { Request } from "express";
+import jwt from "jsonwebtoken";
 import { Google } from "../../auth/Google";
-import { Viewer, Database, User } from "../../lib/types";
+import { Database, User, Viewer } from "../../lib/types";
 import { LoginInArgs } from "./types";
+import { createIdFilter, idToString } from "../../lib/utils";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -16,14 +16,18 @@ const logInViaGoogle = async (
   const userName = payload["name"];
   const userEmail = payload["email"];
   const userAvatar = payload["picture"];
+
   if (!googleId || !userName || !userAvatar || !userEmail) {
     throw new Error("Google login error");
   }
-  let viewer = await db.users.findOne({ _id: new ObjectId(googleId) });
+
+  // Find user by Google ID
+  let viewer = await db.users.findOne(createIdFilter(googleId));
 
   if (!viewer) {
-    const insertRes = await db.users.insertOne({
-      _id: new ObjectId(googleId),
+    // Create new user with Google ID
+    await db.users.insertOne({
+      _id: googleId, // Use Google ID directly
       name: userName,
       avatar: userAvatar,
       contact: userEmail,
@@ -32,61 +36,42 @@ const logInViaGoogle = async (
       listings: [],
     });
 
-    viewer = await db.users.findOne({ _id: insertRes.insertedId });
-  } else {
-    const updateRes = await db.users.findOneAndUpdate(
-      { _id: new ObjectId(googleId) },
-      {
-        $set: {
-          name: userName,
-          avatar: userAvatar,
-          contact: userEmail,
-        },
-      },
-      { returnDocument: "after" }
-    );
-
-    viewer = updateRes.value;
+    viewer = await db.users.findOne(createIdFilter(googleId));
+    return viewer || undefined;
   }
 
-  return viewer as User;
+  // Update existing user
+  const updateRes = await db.users.findOneAndUpdate(
+    createIdFilter(googleId),
+    {
+      $set: {
+        name: userName,
+        avatar: userAvatar,
+        contact: userEmail,
+      },
+    },
+    { returnDocument: "after" }
+  );
+
+  return updateRes.value || undefined;
 };
 
 export const viewerResolvers: IResolvers = {
   Query: {
-    isLoggedIn: async (
-      _root: undefined,
-      _args: {},
-      { db, req }: { db: Database; req: Request }
-    ): Promise<Viewer> => {
+    authUrl: () => {
       try {
-        const userId = req.session?.userId;
-        if (!userId) {
-          return { didRequest: true };
-        }
-
-        const user = await db.users.findOne({ _id: new ObjectId(userId) });
-        if (!user) {
-          return { didRequest: true };
-        }
-
-        return {
-          _id: user._id.toString(),
-          token: req.session?.token,
-          avatar: user.avatar,
-          didRequest: true,
-        };
+        return Google.authUrl;
       } catch (error) {
-        return { didRequest: true };
+        throw new Error(`Failed to query Google Auth Url: ${error}`);
       }
     },
   },
   Mutation: {
-    async logIn(
+    logIn: async (
       _root: undefined,
       { input }: LoginInArgs,
       { db, req }: { db: Database; req: Request }
-    ): Promise<Viewer> {
+    ): Promise<Viewer> => {
       try {
         const payload = await Google.getTokenFromCode(input.code);
         const viewer = await logInViaGoogle(payload, db);
@@ -95,10 +80,10 @@ export const viewerResolvers: IResolvers = {
           throw new Error("Failed to log in with Google");
         }
 
-        // Create a JWT token
+        // Create JWT token
         const token = jwt.sign(
           {
-            _id: viewer._id.toString(),
+            _id: idToString(viewer._id),
             name: viewer.name,
             avatar: viewer.avatar,
             contact: viewer.contact,
@@ -109,12 +94,12 @@ export const viewerResolvers: IResolvers = {
 
         // Set session data
         if (req.session) {
-          req.session.userId = viewer._id.toString();
+          req.session.userId = idToString(viewer._id);
           req.session.token = token;
         }
 
         return {
-          _id: viewer._id.toString(),
+          _id: viewer._id,
           token,
           avatar: viewer.avatar,
           didRequest: true,
@@ -125,7 +110,7 @@ export const viewerResolvers: IResolvers = {
     },
     logOut: (
       _root: undefined,
-      _args: object,
+      _args: {},
       { req }: { req: Request }
     ): Viewer => {
       try {
@@ -140,10 +125,10 @@ export const viewerResolvers: IResolvers = {
     },
   },
   Viewer: {
-    id(viewer: Viewer): string | undefined {
-      return viewer._id;
+    id: (viewer: Viewer): string | undefined => {
+      return viewer._id ? idToString(viewer._id) : undefined;
     },
-    hasWallet(viewer: Viewer): boolean | undefined {
+    hasWallet: (viewer: Viewer): boolean | undefined => {
       return viewer.walletId ? true : undefined;
     },
   },
