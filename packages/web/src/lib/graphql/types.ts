@@ -6,15 +6,20 @@ export interface Viewer {
   didRequest: boolean;
 }
 
+export enum ListingsFilter {
+  PRICE_LOW_TO_HIGH = "PRICE_LOW_TO_HIGH",
+  PRICE_HIGH_TO_LOW = "PRICE_HIGH_TO_LOW"
+}
+
+export enum ListingType {
+  APARTMENT = "APARTMENT",
+  HOUSE = "HOUSE"
+}
+
 export interface Feature {
   name: string;
   icon: string;
   description?: string;
-}
-
-export interface ListingType {
-  APARTMENT: 'APARTMENT';
-  HOUSE: 'HOUSE';
 }
 
 export interface User {
@@ -51,7 +56,7 @@ export interface Listing {
   country: string;
   admin: string;
   city: string;
-  type: keyof ListingType;
+  type: ListingType;
   address: string;
   price: number;
   numOfGuests: number;

@@ -1,75 +1,153 @@
 import {
-  Avatar,
   Button,
-  Divider,
   FormControl,
   FormLabel,
-  HStack,
-  Heading,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Stack,
-  Text,
   Textarea,
-  VStack,
+  useToast,
 } from '@chakra-ui/react';
-
-interface Agent {
-  name: string;
-  phone: string;
-  email: string;
-  image: string;
-}
+import { useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { CONTACT_HOST } from '../lib/graphql/mutations';
 
 interface ContactAgentProps {
-  agent: Agent;
-  onScheduleVisit: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  listingId: string;
+  hostId: string;
 }
 
-export default function ContactAgent({ agent, onScheduleVisit }: ContactAgentProps) {
+export default function ContactAgent({ isOpen, onClose, listingId, hostId }: ContactAgentProps) {
+  const toast = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+
+  const [contactHost, { loading }] = useMutation(CONTACT_HOST, {
+    onCompleted: (data) => {
+      if (data.contactHost.success) {
+        toast({
+          title: 'Message sent!',
+          description: 'The host will get back to you soon.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        onClose();
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
+        });
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await contactHost({
+      variables: {
+        input: {
+          listingId,
+          hostId,
+          ...formData,
+        },
+      },
+    });
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
-    <Stack spacing={6}>
-      <VStack>
-        <Avatar size="xl" src={agent.image} name={agent.name} />
-        <Heading size="md">{agent.name}</Heading>
-        <Text color="gray.600">{agent.phone}</Text>
-        <Text color="gray.600">{agent.email}</Text>
-      </VStack>
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Contact Host</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <Stack as="form" spacing={4} onSubmit={handleSubmit}>
+            <FormControl isRequired>
+              <FormLabel>Name</FormLabel>
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter your name"
+              />
+            </FormControl>
 
-      <Divider />
+            <FormControl isRequired>
+              <FormLabel>Email</FormLabel>
+              <Input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+              />
+            </FormControl>
 
-      <Stack as="form" spacing={4}>
-        <FormControl>
-          <FormLabel>Name</FormLabel>
-          <Input placeholder="Enter your name" />
-        </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Phone</FormLabel>
+              <Input
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Enter your phone number"
+              />
+            </FormControl>
 
-        <FormControl>
-          <FormLabel>Email</FormLabel>
-          <Input type="email" placeholder="Enter your email" />
-        </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Message</FormLabel>
+              <Textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Write your message here..."
+                rows={4}
+              />
+            </FormControl>
 
-        <FormControl>
-          <FormLabel>Phone</FormLabel>
-          <Input type="tel" placeholder="Enter your phone" />
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Message</FormLabel>
-          <Textarea
-            placeholder="I'm interested in this property..."
-            rows={4}
-          />
-        </FormControl>
-
-        <HStack>
-          <Button colorScheme="brand" w="full">
-            Contact Agent
-          </Button>
-          <Button variant="outline" w="full" onClick={onScheduleVisit}>
-            Schedule Visit
-          </Button>
-        </HStack>
-      </Stack>
-    </Stack>
+            <Button
+              type="submit"
+              colorScheme="blue"
+              width="full"
+              isLoading={loading}
+            >
+              Send Message
+            </Button>
+          </Stack>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }
