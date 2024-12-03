@@ -4,6 +4,7 @@ import useAuthStore from '../store/authStore';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:9000/api',
+  credentials: 'include',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -12,12 +13,21 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      'X-CSRF-TOKEN': token || '',
+      authorization: token ? `Bearer ${token}` : '',
     },
+    credentials: 'include',
   };
 });
 
 export const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
+  defaultOptions: {
+    mutate: {
+      errorPolicy: 'all'
+    },
+    query: {
+      errorPolicy: 'all'
+    }
+  }
 });

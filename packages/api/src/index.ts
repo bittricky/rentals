@@ -45,15 +45,37 @@ const PORT = process.env.PORT || 4000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
 const mount = async () => {
-const app: Application = express();
+  const app: Application = express();
   const db = await connectDatabase();
 
   // Configure middleware
   app.use(cors({
+    origin: CLIENT_URL, 
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-csrf-token',
+      'apollo-require-preflight',
+      'x-apollo-operation-name',
+      'x-apollo-operation-type'
+    ]
+  }));
+
+  // Enable pre-flight requests for all routes
+  app.options('*', cors({
     origin: CLIENT_URL,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-csrf-token',
+      'apollo-require-preflight',
+      'x-apollo-operation-name',
+      'x-apollo-operation-type'
+    ]
   }));
 
   app.use(express.json());
@@ -105,8 +127,11 @@ const app: Application = express();
 
   await server.start();
   
-  // @ts-ignore
-  server.applyMiddleware({ app, path: "/api" });
+  server.applyMiddleware({ 
+    app, 
+    path: "/api",
+    cors: false // Let Express handle CORS
+  });
 
   app.listen(PORT, () => {
     console.log(`[app]: http://localhost:${PORT}${server.graphqlPath}`);

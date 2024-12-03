@@ -18,15 +18,13 @@ import { gql, useMutation } from '@apollo/client';
 import useAuthStore from '../store/authStore';
 
 const LOGIN = gql`
-  mutation LogIn($input: LogInInput) {
+  mutation LogIn($input: LoginInput!) {
     logIn(input: $input) {
+      id
       token
-      viewer {
-        id
-        name
-        avatar
-        email
-      }
+      avatar
+      hasWallet
+      didRequest
     }
   }
 `;
@@ -38,6 +36,7 @@ export default function Login() {
   const [loginMutation] = useMutation(LOGIN);
 
   const googleLogin = useGoogleLogin({
+    flow: 'auth-code',
     onSuccess: async (response) => {
       try {
         const { data } = await loginMutation({
@@ -49,7 +48,7 @@ export default function Login() {
         });
 
         if (data?.logIn) {
-          login(data.logIn.token, data.logIn.viewer);
+          login(data.logIn.token, data.logIn);
           toast({
             title: 'Login Successful',
             description: 'Welcome back!',
@@ -70,7 +69,6 @@ export default function Login() {
         });
       }
     },
-    flow: 'auth-code',
   });
 
   return (

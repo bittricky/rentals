@@ -8,6 +8,6 @@ declare module "express-session" {
 
 export interface LoginInArgs {
   input: {
-    idToken: string;
+    code: string;
   };
 }

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request } from "express";
 import { IResolvers } from "@graphql-tools/utils";
+import { ObjectId } from "mongodb";
 import { Google } from "../../auth/Google";
 import { Viewer, Database, User } from "../../lib/types";
 import { LoginInArgs } from "./types";
@@ -18,11 +19,11 @@ const logInViaGoogle = async (
   if (!googleId || !userName || !userAvatar || !userEmail) {
     throw new Error("Google login error");
   }
-  let viewer = await db.users.findOne({ _id: googleId });
+  let viewer = await db.users.findOne({ _id: new ObjectId(googleId) });
 
   if (!viewer) {
     const insertRes = await db.users.insertOne({
-      _id: googleId,
+      _id: new ObjectId(googleId),
       name: userName,
       avatar: userAvatar,
       contact: userEmail,
@@ -34,7 +35,7 @@ const logInViaGoogle = async (
     viewer = await db.users.findOne({ _id: insertRes.insertedId });
   } else {
     const updateRes = await db.users.findOneAndUpdate(
-      { _id: googleId },
+      { _id: new ObjectId(googleId) },
       {
         $set: {
           name: userName,
@@ -53,58 +54,73 @@ const logInViaGoogle = async (
 
 export const viewerResolvers: IResolvers = {
   Query: {
-    isLoggedIn: async (_, _args, { req, db }) => {
-      const user = await db.users.findOne({ _id: req.session.userId });
-      if (!user) {
-        return false;
-      }
-
-      return {
-        _id: user._id.toString(),
-        token: user.token,
-        avatar: user.avatar,
-        hasWallet: user.hasWallet,
-        didRequest: true,
-      };
-    },
-  },
-  Mutation: {
-    logIn: async (
+    isLoggedIn: async (
       _root: undefined,
-      { input }: LoginInArgs,
+      _args: {},
       { db, req }: { db: Database; req: Request }
     ): Promise<Viewer> => {
       try {
-        const { idToken } = input;
-
-        const payload = await Google.verifyToken(idToken);
-
-        const viewer = payload ? await logInViaGoogle(payload, db) : null;
-
-        if (!viewer) {
+        const userId = req.session?.userId;
+        if (!userId) {
           return { didRequest: true };
         }
 
-        const jwtToken = jwt.sign({ userId: viewer._id.toString() }, JWT_SECRET, {
-          expiresIn: "24h",
-        });
-
-        req.session.userId = viewer._id.toString();
-        req.session.isLoggedIn = true;
-
-        req.session.regenerate((err) => {
-          if (err) throw new Error("Session regeneration failed");
-        });
+        const user = await db.users.findOne({ _id: new ObjectId(userId) });
+        if (!user) {
+          return { didRequest: true };
+        }
 
         return {
-          _id: viewer._id.toString(),
-          token: jwtToken,
-          avatar: viewer.avatar,
-          walletId: viewer.walletId,
+          _id: user._id.toString(),
+          token: req.session?.token,
+          avatar: user.avatar,
           didRequest: true,
         };
       } catch (error) {
-        throw new Error(`Failed to log in: ${error}`);
+        return { didRequest: true };
+      }
+    },
+  },
+  Mutation: {
+    async logIn(
+      _root: undefined,
+      { input }: LoginInArgs,
+      { db, req }: { db: Database; req: Request }
+    ): Promise<Viewer> {
+      try {
+        const payload = await Google.getTokenFromCode(input.code);
+        const viewer = await logInViaGoogle(payload, db);
+
+        if (!viewer) {
+          throw new Error("Failed to log in with Google");
+        }
+
+        // Create a JWT token
+        const token = jwt.sign(
+          {
+            _id: viewer._id.toString(),
+            name: viewer.name,
+            avatar: viewer.avatar,
+            contact: viewer.contact,
+          },
+          JWT_SECRET,
+          { expiresIn: "1d" }
+        );
+
+        // Set session data
+        if (req.session) {
+          req.session.userId = viewer._id.toString();
+          req.session.token = token;
+        }
+
+        return {
+          _id: viewer._id.toString(),
+          token,
+          avatar: viewer.avatar,
+          didRequest: true,
+        };
+      } catch (error) {
+        throw new Error(`Failed to log in: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
     },
     logOut: (
@@ -113,24 +129,21 @@ export const viewerResolvers: IResolvers = {
       { req }: { req: Request }
     ): Viewer => {
       try {
-        req.session.destroy((err) => {
-          if (err) {
-            return false;
-          }
-          return true;
+        req.session?.destroy((err: any) => {
+          if (err) throw new Error("Failed to destroy session");
         });
 
         return { didRequest: true };
       } catch (error) {
-        throw new Error(`Failed to log out: ${error}`);
+        throw new Error("Failed to log out");
       }
     },
   },
   Viewer: {
-    id: (viewer: Viewer): string | undefined => {
+    id(viewer: Viewer): string | undefined {
       return viewer._id;
     },
-    hasWallet: (viewer: Viewer): boolean | undefined => {
+    hasWallet(viewer: Viewer): boolean | undefined {
       return viewer.walletId ? true : undefined;
     },
   },

@@ -144,7 +144,7 @@ export const typeDefs = gql`
   }
 
   input LoginInput {
-    idToken: String!
+    code: String!
   }
 
   input ContactHostInput {
