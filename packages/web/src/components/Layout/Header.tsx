@@ -23,9 +23,6 @@ export default function Header() {
               <Link to="/listings">
                 <Text>Listing</Text>
               </Link>
-              <Link to="/sell">
-                <Text>Sell</Text>
-              </Link>
               <Link to="/agents">
                 <Text>Agents</Text>
               </Link>

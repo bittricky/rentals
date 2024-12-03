@@ -27,7 +27,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/sell" element={<div>Sell Page</div>} />
       </Routes>
     </Layout>
   );
