@@ -13,7 +13,9 @@ export enum ListingsFilter {
 
 export enum ListingType {
   APARTMENT = "APARTMENT",
-  HOUSE = "HOUSE"
+  HOUSE = "HOUSE",
+  CONDO = "CONDO",
+  VILLA = "VILLA"
 }
 
 export interface Feature {

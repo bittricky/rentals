@@ -19,13 +19,20 @@ import { Listings as ListingsData, ListingsFilter } from '../lib/graphql/types';
 interface ListingsVars {
   location?: string;
   filter: ListingsFilter;
+  propertyType?: string;
+  minPrice?: number;
+  maxPrice?: number;
   limit: number;
   page: number;
 }
 
 export default function Listings() {
-  const [location, setLocation] = useState<string>();
+  const [location, setLocation] = useState<string>('');
   const [filter, setFilter] = useState<ListingsFilter>(ListingsFilter.PRICE_LOW_TO_HIGH);
+  const [propertyType, setPropertyType] = useState<string>();
+  const [minPrice, setMinPrice] = useState<number>();
+  const [maxPrice, setMaxPrice] = useState<number>();
+  const [priceRange, setPriceRange] = useState<string>();
 
   const { data, loading, error } = useQuery<{ listings: ListingsData }, ListingsVars>(
     LISTINGS,
@@ -33,14 +40,31 @@ export default function Listings() {
       variables: {
         location,
         filter,
+        propertyType,
+        minPrice,
+        maxPrice,
         limit: 12,
         page: 1,
       },
     }
   );
 
-  const handleSearch = (searchLocation: string) => {
+  const handleSearch = (
+    searchLocation: string,
+    searchPropertyType: string | undefined,
+    searchPriceRange: { min: number; max: number } | undefined
+  ) => {
     setLocation(searchLocation);
+    setPropertyType(searchPropertyType);
+    if (searchPriceRange) {
+      setMinPrice(searchPriceRange.min);
+      setMaxPrice(searchPriceRange.max);
+      setPriceRange(`${searchPriceRange.min}-${searchPriceRange.max}`);
+    } else {
+      setMinPrice(undefined);
+      setMaxPrice(undefined);
+      setPriceRange(undefined);
+    }
   };
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,16 +97,15 @@ export default function Listings() {
             <Heading mb={4}>Find Your Dream Property</Heading>
             <HStack spacing={4}>
               <Box flex={1}>
-                <SearchBar onSearch={handleSearch} />
+                <SearchBar 
+                  onSearch={handleSearch}
+                  handleFilterChange={handleFilterChange}
+                  currentFilter={filter}
+                  initialLocation={location}
+                  initialPropertyType={propertyType}
+                  initialPriceRange={priceRange}
+                />
               </Box>
-              <Select w="200px" value={filter} onChange={handleFilterChange}>
-                <option value={ListingsFilter.PRICE_LOW_TO_HIGH}>
-                  Price: Low to High
-                </option>
-                <option value={ListingsFilter.PRICE_HIGH_TO_LOW}>
-                  Price: High to Low
-                </option>
-              </Select>
             </HStack>
           </Box>
 
@@ -91,6 +114,8 @@ export default function Listings() {
               <Text color="gray.600">
                 {data?.listings.total} properties found
                 {location ? ` in ${location}` : ''}
+                {propertyType ? ` • ${propertyType.toLowerCase()}s` : ''}
+                {priceRange ? ` • ${formatPriceRange(priceRange)}` : ''}
               </Text>
               <Grid
                 templateColumns={{
@@ -126,4 +151,19 @@ export default function Listings() {
       </Container>
     </Box>
   );
+}
+
+function formatPriceRange(range: string): string {
+  const [min, max] = range.split('-').map(Number);
+  const formatPrice = (price: number) => 
+    price.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    });
+
+  if (!max || max === Number.MAX_SAFE_INTEGER) {
+    return `${formatPrice(min)}+`;
+  }
+  return `${formatPrice(min)} - ${formatPrice(max)}`;
 }

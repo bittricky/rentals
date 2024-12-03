@@ -1,8 +1,24 @@
 import { gql } from '@apollo/client';
 
 export const LISTINGS = gql`
-  query Listings($location: String, $filter: ListingsFilter!, $limit: Int!, $page: Int!) {
-    listings(location: $location, filter: $filter, limit: $limit, page: $page) {
+  query Listings(
+    $location: String
+    $filter: ListingsFilter!
+    $propertyType: String
+    $minPrice: Int
+    $maxPrice: Int
+    $limit: Int!
+    $page: Int!
+  ) {
+    listings(
+      location: $location
+      filter: $filter
+      propertyType: $propertyType
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      limit: $limit
+      page: $page
+    ) {
       total
       result {
         id

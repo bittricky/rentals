@@ -1,7 +1,7 @@
 import { IResolvers } from "@graphql-tools/utils";
-import { ObjectId } from "mongodb";
+import { ObjectId, Filter } from "mongodb";
 import { Request } from "express";
-import { Database, Listing, User, PropertyReview } from "../../lib/types";
+import { Database, Listing, User, PropertyReview, ListingType } from "../../lib/types";
 import { Google } from "../../lib/api";
 import { authorize } from "../../lib/utils";
 import {
@@ -39,7 +39,7 @@ export const listingResolvers: IResolvers = {
     },
     listings: async (
       _root: undefined,
-      { location, filter, limit, page }: ListingsArgs,
+      { location, filter, propertyType, minPrice, maxPrice, limit, page }: ListingsArgs,
       { db }: { db: Database }
     ): Promise<ListingsData> => {
       try {
@@ -66,20 +66,36 @@ export const listingResolvers: IResolvers = {
           data.region = `${cityText}${adminText}${country}`;
         }
 
-        let cursor = db.listings.find(query);
+        // Add property type filter
+        if (propertyType) {
+          query.type = propertyType as ListingType;
+        }
 
-        if (filter && filter === ListingsFilters.PRICE_LOW_TO_HIGH) {
+        // Add price range filter
+        if (minPrice !== undefined || maxPrice !== undefined) {
+          query.price = {};
+          if (minPrice !== undefined) {
+            query.price.$gte = minPrice;
+          }
+          if (maxPrice !== undefined) {
+            query.price.$lte = maxPrice;
+          }
+        }
+
+        let cursor = db.listings.find(query as Filter<Listing>);
+
+        if (filter === ListingsFilters.PRICE_LOW_TO_HIGH) {
           cursor = cursor.sort({ price: 1 });
         }
 
-        if (filter && filter === ListingsFilters.PRICE_HIGH_TO_LOW) {
+        if (filter === ListingsFilters.PRICE_HIGH_TO_LOW) {
           cursor = cursor.sort({ price: -1 });
         }
 
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);
 
-        data.total = await db.listings.countDocuments(query);
+        data.total = await db.listings.countDocuments(query as Filter<Listing>);
         data.result = await cursor.toArray();
 
         return data;

@@ -174,6 +174,9 @@ export const typeDefs = gql`
     listings(
       location: String
       filter: ListingsFilter!
+      propertyType: String
+      minPrice: Int
+      maxPrice: Int
       limit: Int!
       page: Int!
     ): Listings!

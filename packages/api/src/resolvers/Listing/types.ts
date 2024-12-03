@@ -1,8 +1,10 @@
-import { Booking, Listing } from "../../lib/types";
+import { Booking, Listing, ListingType } from "../../lib/types";
 
 export enum ListingsFilters {
   PRICE_LOW_TO_HIGH = "PRICE_LOW_TO_HIGH",
   PRICE_HIGH_TO_LOW = "PRICE_HIGH_TO_LOW",
+  PROPERTY_TYPE = "PROPERTY_TYPE",
+  PRICE_RANGE = "PRICE_RANGE",
 }
 
 export interface ListingArgs {
@@ -22,6 +24,9 @@ export interface ListingBookingsData {
 export interface ListingsArgs {
   location: string | null;
   filter: ListingsFilters;
+  propertyType?: string;
+  minPrice?: number;
+  maxPrice?: number;
   limit: number;
   page: number;
 }
@@ -36,4 +41,9 @@ export interface ListingsQuery {
   country?: string;
   admin?: string;
   city?: string;
+  type?: ListingType;
+  price?: {
+    $gte?: number;
+    $lte?: number;
+  };
 }
