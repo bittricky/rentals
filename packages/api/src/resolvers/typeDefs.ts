@@ -112,6 +112,8 @@ export const typeDefs = gql`
     contact: String!
     hasWallet: Boolean!
     income: Int
+    isHost: Boolean!
+    hostProfile: Host
     bookings(limit: Int!, page: Int!): Bookings!
     listings(limit: Int!, page: Int!): Listings!
   }

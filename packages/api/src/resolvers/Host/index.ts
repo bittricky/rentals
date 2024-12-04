@@ -1,7 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { ObjectId } from "mongodb";
-import { Database, Host, User, HostReview } from "../../lib/types";
-import { authorize } from "../../lib/utils";
+import { Database, Host, User } from "../../lib/types";
 import { HostReviewsArgs, HostReviewsData } from "./types";
 
 export const hostResolvers: IResolvers = {
@@ -85,7 +84,7 @@ export const hostResolvers: IResolvers = {
   User: {
     isHost: async (user: User, _args: {}, { db }: { db: Database }): Promise<boolean> => {
       try {
-        const host = await db.hosts.findOne({ user: user._id });
+        const host = await db.hosts.findOne({ user: new ObjectId(user._id) });
         return !!host;
       } catch (error) {
         throw new Error(`Failed to check if user is host: ${error}`);
@@ -93,7 +92,7 @@ export const hostResolvers: IResolvers = {
     },
     hostProfile: async (user: User, _args: {}, { db }: { db: Database }): Promise<Host | null> => {
       try {
-        return await db.hosts.findOne({ user: user._id });
+        return await db.hosts.findOne({ user: new ObjectId(user._id) });
       } catch (error) {
         throw new Error(`Failed to get host profile: ${error}`);
       }
