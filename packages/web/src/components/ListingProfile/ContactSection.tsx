@@ -56,7 +56,7 @@ export default function ContactSection({ price }: ContactSectionProps) {
 
           <HStack>
             <Button colorScheme="brand" w="full">
-              Contact Agent
+              Contact Host
             </Button>
             <Button variant="outline" w="full">
               Schedule Visit

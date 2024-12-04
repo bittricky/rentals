@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
 import { User } from "../src/lib/types";
 
-const user1Id = new ObjectId();
-const user2Id = new ObjectId();
-const user3Id = new ObjectId();
-const user4Id = new ObjectId();
-const user5Id = new ObjectId();
+export const user1Id = new ObjectId();
+export const user2Id = new ObjectId();
+export const user3Id = new ObjectId();
+export const user4Id = new ObjectId();
+export const user5Id = new ObjectId();
 
 export const users: User[] = [
   {
@@ -69,5 +69,3 @@ export const users: User[] = [
     isHost: false
   }
 ];
-
-export { user1Id, user2Id, user3Id, user4Id, user5Id };

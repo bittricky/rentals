@@ -113,11 +113,17 @@ export const listingResolvers: IResolvers = {
       _args: {},
       { db }: { db: Database }
     ): Promise<User> => {
-      const host = await db.users.findOne({ _id: new ObjectId(listing.host.toString()) });
-      if (!host) {
+      const user = await db.users.findOne({ _id: new ObjectId(listing.host.toString()) });
+      if (!user) {
         throw new Error("host can't be found");
       }
-      return host;
+      
+      // Verify the user is a host
+      if (!user.isHost) {
+        throw new Error("user is not a host");
+      }
+
+      return user;
     },
     bookingsIndex: (listing: Listing): string => {
       return JSON.stringify(listing.bookingsIndex);

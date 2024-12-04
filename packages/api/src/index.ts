@@ -94,7 +94,7 @@ const mount = async () => {
     }
   };
 
-  app.use(session(sessionConfig) as RequestHandler);
+  app.use(session(sessionConfig) as unknown as RequestHandler);
 
   // JWT Authentication middleware
   const authMiddleware = async (req: Request, _res: Response, next: NextFunction) => {

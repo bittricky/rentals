@@ -176,10 +176,10 @@ const ListingDetail = () => {
                   ${listing.price.toLocaleString()}
                 </Heading>
                 <Button colorScheme="blue" size="lg" onClick={onOpen}>
-                  Contact Agent
+                  Contact Host
                 </Button>
                 <Text fontSize="sm" color="gray.600">
-                  Get in touch with our agent to schedule a viewing or learn more
+                  Get in touch with our host to schedule a viewing or learn more
                   about this property.
                 </Text>
               </VStack>

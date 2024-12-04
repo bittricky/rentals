@@ -6,32 +6,32 @@ import {
   HStack,
   Icon,
   Stack,
+  Tag,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import {
-  Mail,
-  MapPin,
-  Phone,
-  Star,
-  Home,
+  Building2,
   Clock,
+  Star,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface Host {
+interface HostUser {
   id: string;
   name: string;
-  photo: string;
-  title: string;
-  rating: number;
-  reviewCount: number;
-  listingsCount: number;
+  avatar: string;
+}
+
+interface Host {
+  id: string;
+  user: HostUser;
+  license: string;
+  agency: string;
   experience: string;
-  phone: string;
-  email: string;
   specializations: string[];
-  location: string;
+  ratings: number;
+  reviewCount: number;
 }
 
 interface HostCardProps {
@@ -55,18 +55,17 @@ export default function HostCard({ host }: HostCardProps) {
             <HStack spacing={4}>
               <Avatar
                 size="xl"
-                src={host.photo}
-                name={host.name}
+                src={host.user.avatar}
+                name={host.user.name}
               />
               <Stack spacing={1}>
                 <Text fontSize="xl" fontWeight="bold">
-                  {host.name}
+                  {host.user.name}
                 </Text>
-                <Text color="gray.600">{host.title}</Text>
-                <HStack color="gray.600" fontSize="sm">
-                  <Icon as={MapPin} size={16} />
-                  <Text>{host.location}</Text>
-                </HStack>
+                <Text color="gray.600">{host.agency}</Text>
+                <Text fontSize="sm" color="gray.500">
+                  License: {host.license}
+                </Text>
               </Stack>
             </HStack>
           </Flex>
@@ -76,7 +75,7 @@ export default function HostCard({ host }: HostCardProps) {
             <VStack align="start" spacing={0}>
               <HStack color="yellow.500">
                 <Icon as={Star} />
-                <Text fontWeight="bold">{host.rating}</Text>
+                <Text fontWeight="bold">{host.ratings.toFixed(1)}</Text>
               </HStack>
               <Text fontSize="sm" color="gray.600">
                 {host.reviewCount} reviews
@@ -84,11 +83,11 @@ export default function HostCard({ host }: HostCardProps) {
             </VStack>
             <VStack align="start" spacing={0}>
               <HStack>
-                <Icon as={Home} />
-                <Text fontWeight="bold">{host.listingsCount}</Text>
+                <Icon as={Building2} />
+                <Text fontWeight="bold">{host.agency}</Text>
               </HStack>
               <Text fontSize="sm" color="gray.600">
-                Active listings
+                Agency
               </Text>
             </VStack>
             <VStack align="start" spacing={0}>
@@ -107,41 +106,25 @@ export default function HostCard({ host }: HostCardProps) {
             <Text fontSize="sm" fontWeight="medium" mb={2}>
               Specializations
             </Text>
-            <HStack spacing={2} flexWrap="wrap">
+            <HStack flexWrap="wrap" gap={2}>
               {host.specializations.map((spec) => (
-                <Box
-                  key={spec}
-                  bg="brand.50"
-                  color="brand.600"
-                  px={3}
-                  py={1}
-                  borderRadius="full"
-                  fontSize="sm"
-                >
+                <Tag key={spec} size="sm" colorScheme="brand">
                   {spec}
-                </Box>
+                </Tag>
               ))}
             </HStack>
           </Box>
 
-          {/* Contact */}
-          <HStack spacing={4}>
-            <Button
-              as={Link}
-              to={`/hosts/${host.id}`}
-              colorScheme="brand"
-              flex={1}
-            >
-              View Profile
-            </Button>
-            <Button
-              leftIcon={<Icon as={Mail} />}
-              variant="ghost"
-              onClick={() => window.location.href = `mailto:${host.email}`}
-            >
-              Contact
-            </Button>
-          </HStack>
+          {/* View Profile Button */}
+          <Button
+            as={Link}
+            to={`/hosts/${host.id}`}
+            colorScheme="brand"
+            size="lg"
+            width="full"
+          >
+            View Profile
+          </Button>
         </VStack>
       </Box>
     </Box>
