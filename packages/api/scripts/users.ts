@@ -1,113 +1,73 @@
 import { ObjectId } from "mongodb";
 import { User } from "../src/lib/types";
 
+const user1Id = new ObjectId();
+const user2Id = new ObjectId();
+const user3Id = new ObjectId();
+const user4Id = new ObjectId();
+const user5Id = new ObjectId();
+
 export const users: User[] = [
   {
-    _id: new ObjectId("5d378db94e84753160e08b55"),
+    _id: user1Id,
     token: "token_************",
-    name: "James J.",
-    avatar:
-      "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560648533/mock/users/user-profile-1_mawp12.jpg",
-    contact: "james@tinyhouse.com",
+    name: "Sarah Johnson",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+    contact: "sarah.j@rentals.com",
     walletId: "acct_************",
     income: 723796,
     bookings: [],
-    listings: [
-      new ObjectId("5d378db94e84753160e08b31"),
-      new ObjectId("5d378db94e84753160e08b4b"),
-      new ObjectId("5d378db94e84753160e08b4c"),
-    ],
-    isAgent: true,
-    agentProfile: new ObjectId("5d378db94e84753160e08c01")
+    listings: [],
+    isHost: true
   },
   {
-    _id: new ObjectId("5d378db94e84753160e08b56"),
+    _id: user2Id,
     token: "token_************",
-    name: "Elizabeth A.",
-    avatar:
-      "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560649052/mock/users/user-profile-2_arwtdy.jpg",
-    contact: "elizabeth@tinyhouse.com",
+    name: "Michael Chen",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
+    contact: "michael.c@rentals.com",
     walletId: "acct_************",
     income: 256144,
     bookings: [],
-    listings: [
-      new ObjectId("5d378db94e84753160e08b37"),
-      new ObjectId("5d378db94e84753160e08b38"),
-      new ObjectId("5d378db94e84753160e08b3a"),
-      new ObjectId("5d378db94e84753160e08b3b"),
-      new ObjectId("5d378db94e84753160e08b3d"),
-      new ObjectId("5d378db94e84753160e08b41"),
-      new ObjectId("5d378db94e84753160e08b43"),
-      new ObjectId("5d378db94e84753160e08b4a"),
-      new ObjectId("5d378db94e84753160e08b50"),
-      new ObjectId("5d378db94e84753160e08b51"),
-      new ObjectId("5d378db94e84753160e08b53"),
-      new ObjectId("5d378db94e84753160e08b54"),
-    ],
-    isAgent: true,
-    agentProfile: new ObjectId("5d378db94e84753160e08c02")
+    listings: [],
+    isHost: true
   },
   {
-    _id: new ObjectId("5d378db94e84753160e08b57"),
+    _id: user3Id,
     token: "token_************",
-    name: "Andrew D.",
-    avatar:
-      "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560649280/mock/users/user-profile-3_omxctk.jpg",
-    contact: "andrew@tinyhouse.com",
+    name: "Emma Rodriguez",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
+    contact: "emma.r@rentals.com",
     walletId: "acct_************",
     income: 272359,
     bookings: [],
-    listings: [
-      new ObjectId("5d378db94e84753160e08b30"),
-      new ObjectId("5d378db94e84753160e08b32"),
-      new ObjectId("5d378db94e84753160e08b34"),
-      new ObjectId("5d378db94e84753160e08b35"),
-      new ObjectId("5d378db94e84753160e08b36"),
-      new ObjectId("5d378db94e84753160e08b3c"),
-      new ObjectId("5d378db94e84753160e08b3e"),
-      new ObjectId("5d378db94e84753160e08b47"),
-      new ObjectId("5d378db94e84753160e08b48"),
-      new ObjectId("5d378db94e84753160e08b4d"),
-    ],
-    isAgent: true,
-    agentProfile: new ObjectId("5d378db94e84753160e08c03")
+    listings: [],
+    isHost: true
   },
   {
-    _id: new ObjectId("5d378db94e84753160e08b58"),
+    _id: user4Id,
     token: "token_************",
-    name: "Danielle C.",
-    avatar:
-      "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560650165/mock/users/user-profile-4_wxi6om.jpg",
-    contact: "danielle@tinyhouse.com",
+    name: "David Thompson",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+    contact: "david.t@rentals.com",
     walletId: "acct_************",
     income: 465043,
     bookings: [],
-    listings: [
-      new ObjectId("5d378db94e84753160e08b3f"),
-      new ObjectId("5d378db94e84753160e08b40"),
-      new ObjectId("5d378db94e84753160e08b44"),
-    ],
+    listings: [],
+    isHost: true
   },
   {
-    _id: new ObjectId("5d378db94e84753160e08b59"),
+    _id: user5Id,
     token: "token_************",
-    name: "Sarah K.",
-    avatar:
-      "https://res.cloudinary.com/tiny-house/image/upload/w_1000,ar_1:1,c_fill,g_auto/v1560650436/mock/users/user-profile-5_tm8hhl.jpg",
-    contact: "sarah@tinyhouse.com",
+    name: "Regular User",
+    avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200",
+    contact: "user@rentals.com",
     walletId: "acct_************",
     income: 104347,
     bookings: [],
-    listings: [
-      new ObjectId("5d378db94e84753160e08b33"),
-      new ObjectId("5d378db94e84753160e08b39"),
-      new ObjectId("5d378db94e84753160e08b42"),
-      new ObjectId("5d378db94e84753160e08b45"),
-      new ObjectId("5d378db94e84753160e08b46"),
-      new ObjectId("5d378db94e84753160e08b49"),
-      new ObjectId("5d378db94e84753160e08b4e"),
-      new ObjectId("5d378db94e84753160e08b4f"),
-      new ObjectId("5d378db94e84753160e08b52"),
-    ],
-  },
+    listings: [],
+    isHost: false
+  }
 ];
+
+export { user1Id, user2Id, user3Id, user4Id, user5Id };

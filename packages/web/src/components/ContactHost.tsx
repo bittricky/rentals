@@ -17,14 +17,14 @@ import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { CONTACT_HOST } from '../lib/graphql/mutations';
 
-interface ContactAgentProps {
+interface ContactHostProps {
   isOpen: boolean;
   onClose: () => void;
   listingId: string;
   hostId: string;
 }
 
-export default function ContactAgent({ isOpen, onClose, listingId, hostId }: ContactAgentProps) {
+export default function ContactHost({ isOpen, onClose, listingId, hostId }: ContactHostProps) {
   const toast = useToast();
   const [formData, setFormData] = useState({
     name: '',

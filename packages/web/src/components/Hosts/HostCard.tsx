@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface Agent {
+interface Host {
   id: string;
   name: string;
   photo: string;
@@ -34,11 +34,11 @@ interface Agent {
   location: string;
 }
 
-interface AgentCardProps {
-  agent: Agent;
+interface HostCardProps {
+  host: Host;
 }
 
-export default function AgentCard({ agent }: AgentCardProps) {
+export default function HostCard({ host }: HostCardProps) {
   return (
     <Box
       bg="white"
@@ -55,17 +55,17 @@ export default function AgentCard({ agent }: AgentCardProps) {
             <HStack spacing={4}>
               <Avatar
                 size="xl"
-                src={agent.photo}
-                name={agent.name}
+                src={host.photo}
+                name={host.name}
               />
               <Stack spacing={1}>
                 <Text fontSize="xl" fontWeight="bold">
-                  {agent.name}
+                  {host.name}
                 </Text>
-                <Text color="gray.600">{agent.title}</Text>
+                <Text color="gray.600">{host.title}</Text>
                 <HStack color="gray.600" fontSize="sm">
                   <Icon as={MapPin} size={16} />
-                  <Text>{agent.location}</Text>
+                  <Text>{host.location}</Text>
                 </HStack>
               </Stack>
             </HStack>
@@ -76,16 +76,16 @@ export default function AgentCard({ agent }: AgentCardProps) {
             <VStack align="start" spacing={0}>
               <HStack color="yellow.500">
                 <Icon as={Star} />
-                <Text fontWeight="bold">{agent.rating}</Text>
+                <Text fontWeight="bold">{host.rating}</Text>
               </HStack>
               <Text fontSize="sm" color="gray.600">
-                {agent.reviewCount} reviews
+                {host.reviewCount} reviews
               </Text>
             </VStack>
             <VStack align="start" spacing={0}>
               <HStack>
                 <Icon as={Home} />
-                <Text fontWeight="bold">{agent.listingsCount}</Text>
+                <Text fontWeight="bold">{host.listingsCount}</Text>
               </HStack>
               <Text fontSize="sm" color="gray.600">
                 Active listings
@@ -94,7 +94,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
             <VStack align="start" spacing={0}>
               <HStack>
                 <Icon as={Clock} />
-                <Text fontWeight="bold">{agent.experience}</Text>
+                <Text fontWeight="bold">{host.experience}</Text>
               </HStack>
               <Text fontSize="sm" color="gray.600">
                 Experience
@@ -108,7 +108,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
               Specializations
             </Text>
             <HStack spacing={2} flexWrap="wrap">
-              {agent.specializations.map((spec) => (
+              {host.specializations.map((spec) => (
                 <Box
                   key={spec}
                   bg="brand.50"
@@ -128,7 +128,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
           <HStack spacing={4}>
             <Button
               as={Link}
-              to={`/agents/${agent.id}`}
+              to={`/hosts/${host.id}`}
               colorScheme="brand"
               flex={1}
             >
@@ -137,7 +137,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
             <Button
               leftIcon={<Icon as={Mail} />}
               variant="ghost"
-              onClick={() => window.location.href = `mailto:${agent.email}`}
+              onClick={() => window.location.href = `mailto:${host.email}`}
             >
               Contact
             </Button>

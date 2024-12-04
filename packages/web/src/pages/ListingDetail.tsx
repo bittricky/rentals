@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import ContactAgent from '../components/ContactAgent';
+import ContactHost from '../components/ContactHost';
 import ImageGallery from '../components/ImageGallery';
 import NearbyLocations from '../components/NearbyLocations';
 import { LISTING } from '../lib/graphql/queries';
@@ -158,7 +158,7 @@ const ListingDetail = () => {
           </Stack>
 
           <Box position="sticky" top={4}>
-            <ContactAgent
+            <ContactHost
               isOpen={isOpen}
               onClose={onClose}
               listingId={listing.id}

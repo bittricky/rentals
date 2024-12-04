@@ -150,8 +150,8 @@ export const USER = gql`
           price
         }
       }
-      isAgent
-      agentProfile {
+      isHost
+      hostProfile {
         id
         license
         agency
@@ -164,9 +164,9 @@ export const USER = gql`
   }
 `;
 
-export const AGENTS = gql`
-  query Agents($limit: Int!, $page: Int!) {
-    agents(limit: $limit, page: $page) {
+export const GET_HOSTS = gql`
+  query Hosts($limit: Int!, $page: Int!) {
+    hosts(limit: $limit, page: $page) {
       total
       result {
         id
@@ -186,9 +186,9 @@ export const AGENTS = gql`
   }
 `;
 
-export const AGENT = gql`
-  query Agent($id: ID!) {
-    agent(id: $id) {
+export const GET_HOST = gql`
+  query Host($id: ID!) {
+    host(id: $id) {
       id
       user {
         id
@@ -239,9 +239,9 @@ export const PROPERTY_REVIEWS = gql`
   }
 `;
 
-export const AGENT_REVIEWS = gql`
-  query AgentReviews($agentId: ID!, $limit: Int!, $page: Int!) {
-    agentReviews(agentId: $agentId, limit: $limit, page: $page) {
+export const HOST_REVIEWS = gql`
+  query HostReviews($hostId: ID!, $limit: Int!, $page: Int!) {
+    hostReviews(hostId: $hostId, limit: $limit, page: $page) {
       total
       result {
         id
@@ -286,8 +286,6 @@ export const FEATURED_LISTINGS = gql`
         numOfGuests
         bedrooms
         bathrooms
-        swimmingPools
-        pantries
         features {
           name
           icon

@@ -23,8 +23,8 @@ export default function Header() {
               <Link to="/listings">
                 <Text>Listing</Text>
               </Link>
-              <Link to="/agents">
-                <Text>Agents</Text>
+              <Link to="/hosts">
+                <Text>Hosts</Text>
               </Link>
             </HStack>
           </HStack>

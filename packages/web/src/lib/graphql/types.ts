@@ -33,20 +33,20 @@ export interface User {
   income?: number;
   bookings?: Bookings;
   listings?: Listings;
-  isAgent?: boolean;
-  agentProfile?: Agent;
+  isHost?: boolean;
+  hostProfile?: Host;
 }
 
-export interface Agent {
+export interface Host {
   id: string;
   user: User;
   license: string;
   agency: string;
-  experience: number;
+  experience: string;
   specializations: string[];
   ratings: number;
   reviewCount: number;
-  reviews?: AgentReviews;
+  reviews?: HostReviews;
 }
 
 export interface Listing {
@@ -94,8 +94,8 @@ export interface PropertyReview extends Review {
   listing: Listing;
 }
 
-export interface AgentReview extends Review {
-  agent: Agent;
+export interface HostReview extends Review {
+  host: Host;
 }
 
 export interface Bookings {
@@ -109,9 +109,9 @@ export interface Listings {
   result: Listing[];
 }
 
-export interface Agents {
+export interface Hosts {
   total: number;
-  result: Agent[];
+  result: Host[];
 }
 
 export interface PropertyReviews {
@@ -119,9 +119,9 @@ export interface PropertyReviews {
   result: PropertyReview[];
 }
 
-export interface AgentReviews {
+export interface HostReviews {
   total: number;
-  result: AgentReview[];
+  result: HostReview[];
 }
 
 export interface ContactHostInput {

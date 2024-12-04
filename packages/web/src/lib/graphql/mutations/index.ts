@@ -29,11 +29,11 @@ export const ADD_PROPERTY_REVIEW = gql`
   }
 `;
 
-export const ADD_AGENT_REVIEW = gql`
-  mutation AddAgentReview($agentId: ID!, $input: ReviewInput!) {
-    addAgentReview(agentId: $agentId, input: $input) {
+export const ADD_HOST_REVIEW = gql`
+  mutation AddHostReview($hostId: ID!, $input: ReviewInput!) {
+    addHostReview(hostId: $hostId, input: $input) {
       id
-      agent {
+      host {
         id
         user {
           name

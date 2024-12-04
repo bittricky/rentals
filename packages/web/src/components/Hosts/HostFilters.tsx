@@ -20,7 +20,7 @@ const SPECIALIZATIONS = [
   'Waterfront Properties',
 ];
 
-export default function AgentFilters() {
+export default function HostFilters() {
   return (
     <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={6}>
       {/* Experience Range */}

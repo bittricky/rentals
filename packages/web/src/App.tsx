@@ -6,7 +6,8 @@ import ListingDetail from './pages/ListingDetail';
 import ListingProfile from './pages/ListingProfile';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
-import Agents from './pages/Agents';
+import Hosts from './pages/Hosts';
+import HostDetail from './pages/HostDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
         <Route path="/listing/:id" element={<ListingDetail />} />
         <Route path="/listing/:id/profile" element={<ListingProfile />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/agents" element={<Agents />} />
+        <Route path="/hosts" element={<Hosts />} />
+        <Route path="/host/:id" element={<HostDetail />} />
         <Route
           path="/profile"
           element={

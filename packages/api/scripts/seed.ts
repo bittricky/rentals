@@ -2,7 +2,7 @@ import { connectDatabase } from "../src/database";
 
 import { listings } from "./listings";
 import { users } from "./users";
-import { agents } from "./agents";
+import { hosts } from "./hosts";
 
 const seed = async () => {
   try {
@@ -13,7 +13,8 @@ const seed = async () => {
     // Clear existing collections
     await db.listings.deleteMany({});
     await db.users.deleteMany({});
-    await db.agents.deleteMany({});
+    await db.hosts.deleteMany({});
+    await db.hostReviews.deleteMany({});
 
     // Insert new data
     for (const listing of listings) {
@@ -24,15 +25,15 @@ const seed = async () => {
       await db.users.insertOne(user);
     }
 
-    for (const agent of agents) {
-      await db.agents.insertOne(agent);
-      // Update the corresponding user to mark them as an agent
+    for (const host of hosts) {
+      await db.hosts.insertOne(host);
+      // Update the corresponding user to mark them as a host
       await db.users.updateOne(
-        { _id: agent.user },
+        { _id: host.user },
         { 
           $set: { 
-            isAgent: true,
-            agentProfile: agent._id
+            isHost: true,
+            hostProfile: host._id
           } 
         }
       );

@@ -49,9 +49,9 @@ export const typeDefs = gql`
     updatedAt: String
   }
 
-  type AgentReview {
+  type HostReview {
     id: ID!
-    agent: Agent!
+    host: Host!
     author: User!
     content: String!
     rating: Float!
@@ -69,9 +69,9 @@ export const typeDefs = gql`
     result: [PropertyReview!]!
   }
 
-  type AgentReviews {
+  type HostReviews {
     total: Int!
-    result: [AgentReview!]!
+    result: [HostReview!]!
   }
 
   type Listing {
@@ -114,25 +114,23 @@ export const typeDefs = gql`
     income: Int
     bookings(limit: Int!, page: Int!): Bookings!
     listings(limit: Int!, page: Int!): Listings!
-    isAgent: Boolean
-    agentProfile: Agent
   }
 
-  type Agent {
+  type Host {
     id: ID!
     user: User!
     license: String!
     agency: String!
-    experience: Int!
+    experience: String!
     specializations: [String!]!
     ratings: Float!
     reviewCount: Int!
-    reviews(limit: Int!, page: Int!): AgentReviews
+    reviews(limit: Int!, page: Int!): HostReviews!
   }
 
-  type Agents {
+  type Hosts {
     total: Int!
-    result: [Agent!]!
+    result: [Host!]!
   }
 
   type Viewer {
@@ -180,10 +178,10 @@ export const typeDefs = gql`
       limit: Int!
       page: Int!
     ): Listings!
-    agent(id: ID!): Agent!
-    agents(limit: Int!, page: Int!): Agents!
+    host(id: ID!): Host!
+    hosts(limit: Int!, page: Int!): Hosts!
     propertyReviews(listingId: ID!, limit: Int!, page: Int!): PropertyReviews!
-    agentReviews(agentId: ID!, limit: Int!, page: Int!): AgentReviews!
+    hostReviews(hostId: ID!, limit: Int!, page: Int!): HostReviews!
   }
 
   type Mutation {
@@ -191,6 +189,6 @@ export const typeDefs = gql`
     logOut: Viewer!
     contactHost(input: ContactHostInput!): ContactHostResponse!
     addPropertyReview(listingId: ID!, input: ReviewInput!): PropertyReview!
-    addAgentReview(agentId: ID!, input: ReviewInput!): AgentReview!
+    addHostReview(hostId: ID!, input: ReviewInput!): HostReview!
   }
 `;

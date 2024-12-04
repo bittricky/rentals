@@ -54,8 +54,8 @@ export interface PropertyReview extends Review {
   listing: ObjectId;
 }
 
-export interface AgentReview extends Review {
-  agent: ObjectId;
+export interface HostReview extends Review {
+  host: ObjectId;
 }
 
 export interface Listing {
@@ -89,15 +89,16 @@ export interface PriceRange {
   max: number;
 }
 
-export interface Agent {
+export interface Host {
   _id: ObjectId;
   user: ObjectId;
   license: string;
   agency: string;
-  experience: number;
+  experience: string;
   specializations: string[];
   ratings: number;
   reviewCount: number;
+  createdAt: string;
 }
 
 export interface User {
@@ -112,15 +113,15 @@ export interface User {
   bookings: ObjectId[];
   listings: ObjectId[];
   authorized?: boolean;
-  isAgent?: boolean;
-  agentProfile?: ObjectId;
+  isHost?: boolean;
+  hostProfile?: ObjectId;
 }
 
 export interface Database {
   bookings: Collection<Booking>;
   listings: Collection<Listing>;
   users: Collection<User>;
-  agents: Collection<Agent>;
+  hosts: Collection<Host>;
   propertyReviews: Collection<PropertyReview>;
-  agentReviews: Collection<AgentReview>;
+  hostReviews: Collection<HostReview>;
 }
