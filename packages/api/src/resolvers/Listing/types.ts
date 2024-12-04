@@ -11,6 +11,11 @@ export interface ListingArgs {
   id: string;
 }
 
+export interface ListingReviewsArgs {
+  limit?: number;
+  page?: number;
+}
+
 export interface ListingBookingsArgs {
   limit: number;
   page: number;

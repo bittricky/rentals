@@ -19,6 +19,20 @@ export const propertyReviewResolvers: IResolvers = {
       { db }: { db: Database }
     ): Promise<{ total: number; result: PropertyReview[] }> => {
       try {
+        // First get the total count
+        const total = await db.propertyReviews.countDocuments({ 
+          listing: new ObjectId(listingId) 
+        });
+
+        // If there are no reviews, return early with empty result
+        if (total === 0) {
+          return {
+            total: 0,
+            result: [],
+          };
+        }
+
+        // Then get the paginated data
         const data = await db.propertyReviews
           .find({ listing: new ObjectId(listingId) })
           .sort({ createdAt: -1 })
@@ -26,16 +40,17 @@ export const propertyReviewResolvers: IResolvers = {
           .limit(limit)
           .toArray();
 
-        const total = await db.propertyReviews.countDocuments({ 
-          listing: new ObjectId(listingId) 
-        });
-
         return {
           total,
           result: data,
         };
       } catch (error) {
-        throw new Error(`Failed to query property reviews: ${error}`);
+        // Even in case of error, we return a valid response with 0 total
+        console.error(`Failed to query property reviews: ${error}`);
+        return {
+          total: 0,
+          result: [],
+        };
       }
     },
   },

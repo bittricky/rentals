@@ -157,17 +157,41 @@ export const listingResolvers: IResolvers = {
     },
     reviews: async (
       listing: Listing,
-      _args: {},
+      { limit = 5, page = 1 }: { limit?: number; page?: number },
       { db }: { db: Database }
-    ): Promise<PropertyReview[]> => {
+    ): Promise<{ total: number; result: PropertyReview[] }> => {
       try {
-        const reviews = await db.propertyReviews
+        // First get the total count
+        const total = await db.propertyReviews.countDocuments({ 
+          listing: listing._id 
+        });
+
+        // If there are no reviews, return early with empty result
+        if (total === 0) {
+          return {
+            total: 0,
+            result: [],
+          };
+        }
+
+        // Then get the paginated data
+        const result = await db.propertyReviews
           .find({ listing: listing._id })
           .sort({ createdAt: -1 })
+          .skip(page > 0 ? (page - 1) * limit : 0)
+          .limit(limit)
           .toArray();
-        return reviews;
+
+        return {
+          total,
+          result,
+        };
       } catch (error) {
-        throw new Error(`Failed to query listing reviews: ${error}`);
+        console.error(`Failed to query listing reviews: ${error}`);
+        return {
+          total: 0,
+          result: [],
+        };
       }
     }
   }

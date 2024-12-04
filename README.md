@@ -30,7 +30,7 @@ DB_USER_PASSWORD=<password>
 DB_CLUSTER=<mongodb cluster>
 G_CLIENT_ID=<Google OAuth client id>
 G_CLIENT_SECRET=<Google OAuth API secret>
-PUBLIC_URL=<http://localhost:3000>
+PUBLIC_URL=<http://localhost:5173>
 SECRET=<some secret text>
 NODE_ENV=<development for local dev>
 ```
