@@ -1,35 +1,28 @@
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
-  Button,
   Container,
   Grid,
-  HStack,
   Heading,
-  Icon,
-  Image,
-  Stack,
   Text,
-  VStack,
-  useDisclosure,
-  Spinner,
+  HStack,
+  Icon,
+  Button,
+  Flex,
+  IconButton,
   Center,
+  Spinner,
 } from '@chakra-ui/react';
-import {
-  Bath,
-  Bed,
-  Calendar,
-  Car,
-  Heart,
-  MapPin,
-  Waves,
-  Share2,
-  Square,
-} from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { ArrowLeft, Share2, BookmarkCheck } from 'lucide-react';
 import { useQuery } from '@apollo/client';
-import ContactHost from '../components/ContactHost';
-import ImageGallery from '../components/ImageGallery';
-import NearbyLocations from '../components/NearbyLocations';
+import PropertyDetails from '../components/ListingProfile/PropertyDetails';
+import ImageGallery from '../components/ListingProfile/ImageGallery';
+import PropertyDescription from '../components/ListingProfile/PropertyDescription';
+import LocationInfo from '../components/ListingProfile/LocationInfo';
+import ContactSection from '../components/ListingProfile/ContactSection';
+import RelatedListings from '../components/ListingProfile/RelatedListings';
+import PropertyFeatures from '../components/ListingProfile/PropertyFeatures';
 import { LISTING } from '../lib/graphql/queries';
 import { Listing } from '../lib/graphql/types';
 
@@ -43,11 +36,23 @@ interface ListingVars {
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
+  const [isSaved, setIsSaved] = useState(false);
   
   const { data, loading, error } = useQuery<ListingData, ListingVars>(LISTING, {
     variables: { id: id! },
   });
+
+  const handleBack = () => navigate(-1);
+  const handleShare = () => {
+    navigator.share?.({
+      title: data?.listing.title,
+      text: data?.listing.description,
+      url: window.location.href,
+    }).catch(console.error);
+  };
+
+  const handleSave = () => setIsSaved(!isSaved);
 
   if (loading) {
     return (
@@ -76,118 +81,81 @@ const ListingDetail = () => {
   const listing = data.listing;
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <Stack spacing={8}>
-        <Box>
-          <HStack justify="space-between" mb={4}>
-            <Box>
-              <Heading size="lg">{listing.title}</Heading>
-              <HStack spacing={2} color="gray.600">
-                <Icon as={MapPin} />
-                <Text>{listing.city}, {listing.admin}</Text>
-              </HStack>
-            </Box>
-            <HStack>
-              <Button leftIcon={<Heart />} variant="ghost">
-                Save
-              </Button>
-              <Button leftIcon={<Share2 />} variant="ghost">
-                Share
-              </Button>
-            </HStack>
-          </HStack>
-          <ImageGallery images={[listing.image]} />
-        </Box>
-
-        <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={8}>
-          <Stack spacing={8}>
-            <Box>
-              <Heading size="md" mb={4}>
-                About this property
-              </Heading>
-              <Text whiteSpace="pre-line">{listing.description}</Text>
-            </Box>
-
-            <Box>
-              <Heading size="md" mb={4}>
-                Property Details
-              </Heading>
-              <Grid
-                templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }}
-                gap={4}
-              >
-                <HStack>
-                  <Icon as={Bed} />
-                  <Text>{listing.bedrooms} Bedrooms</Text>
-                </HStack>
-                <HStack>
-                  <Icon as={Bath} />
-                  <Text>{listing.bathrooms} Bathrooms</Text>
-                </HStack>
-                <HStack>
-                  <Icon as={Square} />
-                  <Text>{listing.numOfGuests} Guests</Text>
-                </HStack>
-                <HStack>
-                  <Icon as={Waves} />
-                  <Text>{listing.swimmingPools} Pool</Text>
-                </HStack>
-              </Grid>
-            </Box>
-
-            <Box>
-              <Heading size="md" mb={4}>
-                Features & Amenities
-              </Heading>
-              <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={4}>
-                {listing.features.map((feature) => (
-                  <HStack key={feature.name}>
-                    <Icon as={MapPin} />
-                    <Text>{feature.name}</Text>
-                  </HStack>
-                ))}
-              </Grid>
-            </Box>
-
-            <Box>
-              <Heading size="md" mb={4}>
-                Location
-              </Heading>
-              <NearbyLocations address={listing.address} />
-            </Box>
-          </Stack>
-
-          <Box position="sticky" top={4}>
-            <ContactHost
-              isOpen={isOpen}
-              onClose={onClose}
-              listingId={listing.id}
-              hostId={listing.host.id}
+    <Box bg="gray.50" minH="100vh" py={8}>
+      <Container maxW="container.xl">
+        {/* Header Actions */}
+        <Flex justify="space-between" mb={6}>
+          <Button
+            leftIcon={<Icon as={ArrowLeft} />}
+            variant="ghost"
+            onClick={handleBack}
+          >
+            Back to Listings
+          </Button>
+          <HStack>
+            <IconButton
+              aria-label="Share listing"
+              icon={<Icon as={Share2} />}
+              onClick={handleShare}
+              variant="ghost"
             />
-            <Box
-              p={6}
-              borderWidth={1}
-              borderRadius="lg"
-              position="sticky"
-              top={4}
-            >
-              <VStack align="stretch" spacing={4}>
-                <Heading size="lg">
-                  ${listing.price.toLocaleString()}
-                </Heading>
-                <Button colorScheme="blue" size="lg" onClick={onOpen}>
-                  Contact Host
-                </Button>
-                <Text fontSize="sm" color="gray.600">
-                  Get in touch with our host to schedule a viewing or learn more
-                  about this property.
-                </Text>
-              </VStack>
+            <IconButton
+              aria-label="Save listing"
+              icon={<Icon as={BookmarkCheck} />}
+              onClick={handleSave}
+              variant="ghost"
+              color={isSaved ? 'brand.500' : undefined}
+            />
+          </HStack>
+        </Flex>
+
+        {/* Main Content */}
+        <Grid templateColumns={{ base: '1fr', lg: '1fr 350px' }} gap={8}>
+          <Box>
+            <ImageGallery images={[listing.image]} />
+            
+            <Box mt={8}>
+              <Heading size="xl" mb={2}>{listing.title}</Heading>
+              <Text fontSize="lg" color="gray.600" mb={6}>
+                {listing.city}, {listing.admin}
+              </Text>
+
+              <PropertyDetails
+                features={{
+                  bedrooms: listing.bedrooms,
+                  bathrooms: listing.bathrooms,
+                  parking: listing.swimmingPools
+                }}
+              />
+
+              <PropertyDescription description={listing.description} />
+              
+              <PropertyFeatures features={listing.features} />
+              
+              <LocationInfo 
+                address={listing.address}
+                city={listing.city}
+                admin={listing.admin}
+                country={listing.country}
+              />
             </Box>
           </Box>
+
+          {/* Sidebar */}
+          <Box>
+            <ContactSection
+              price={listing.price}
+              hostId={listing.host.id}
+              listingId={listing.id}
+              host={listing.host}
+            />
+          </Box>
         </Grid>
-      </Stack>
-    </Container>
+        <Box mt={12}>
+          <RelatedListings currentListingId={listing.id} />
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

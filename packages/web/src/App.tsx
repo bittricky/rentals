@@ -3,7 +3,6 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Listings from './pages/Listings';
 import ListingDetail from './pages/ListingDetail';
-import ListingProfile from './pages/ListingProfile';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Hosts from './pages/Hosts';
@@ -17,7 +16,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/listings" element={<Listings />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
-        <Route path="/listing/:id/profile" element={<ListingProfile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/hosts" element={<Hosts />} />
         <Route path="/host/:id" element={<HostDetail />} />
