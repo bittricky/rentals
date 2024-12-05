@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { MapPin, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { ListingType, ListingsFilter } from '../lib/graphql/types';
+import { ListingType, ListingsFilter } from '../../lib/graphql/types';
 
 interface SearchBarProps {
   onSearch: (location: string, propertyType: string | undefined, priceRange: { min: number; max: number } | undefined) => void;

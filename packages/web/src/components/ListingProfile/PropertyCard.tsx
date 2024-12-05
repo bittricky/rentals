@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Bed, Bath, Home, Waves, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ListingType } from '../lib/graphql/types';
+import { ListingType } from '../../lib/graphql/types';
 
 interface PropertyCardProps {
   id: string;

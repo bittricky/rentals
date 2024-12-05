@@ -24,7 +24,7 @@ export const LISTINGS = gql`
         id
         title
         description
-        image
+        images
         host {
           id
           name

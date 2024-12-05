@@ -11,8 +11,8 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import SearchBar from '../components/SearchBar';
-import PropertyCard from '../components/PropertyCard';
+import SearchBar from '../components/ListingProfile/SearchBar';
+import PropertyCard from '../components/ListingProfile/PropertyCard';
 import { FEATURED_LISTINGS } from '../lib/graphql/queries';
 import { ListingsFilter } from '../lib/graphql/types';
 import { Listings as ListingsData } from '../lib/graphql/types';

@@ -10,8 +10,8 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import SearchBar from '../components/SearchBar';
-import PropertyCard from '../components/PropertyCard';
+import SearchBar from '../components/ListingProfile/SearchBar';
+import PropertyCard from '../components/ListingProfile/PropertyCard';
 import { LISTINGS } from '../lib/graphql/queries';
 import { Listings as ListingsData, ListingsFilter } from '../lib/graphql/types';
 
@@ -135,8 +135,7 @@ export default function Listings() {
                     bedrooms={listing.bedrooms}
                     bathrooms={listing.bathrooms}
                     swimmingPools={listing.swimmingPools}
-                    pantries={listing.pantries}
-                    imageUrl={listing.image}
+                    imageUrl={listing.images[0]}
                   />
                 ))}
               </Grid>

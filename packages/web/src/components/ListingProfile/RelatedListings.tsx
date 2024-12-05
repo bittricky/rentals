@@ -3,7 +3,7 @@ import {
   Grid,
   Heading,
 } from '@chakra-ui/react';
-import PropertyCard from '../PropertyCard';
+import PropertyCard from './PropertyCard';
 
 const RELATED_PROPERTIES = [
   {
