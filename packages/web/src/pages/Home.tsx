@@ -63,7 +63,7 @@ export default function Home() {
       <Box bg="brand.600" py={12}>
         <Container maxW="container.xl">
           <VStack spacing={4} textAlign="center" color="white">
-            <Heading size="2xl">Find Your Dream Home</Heading>
+            <Heading size="2xl">Find Your Dream Vacation Home</Heading>
             <Text fontSize="xl">
               Discover the perfect property in your favorite location
             </Text>
@@ -121,8 +121,7 @@ export default function Home() {
                     bedrooms={listing.bedrooms}
                     bathrooms={listing.bathrooms}
                     swimmingPools={listing.swimmingPools}
-                    pantries={listing.pantries}
-                    imageUrl={listing.image}
+                    imageUrl={listing.images[0]}
                     averageRating={listing.averageRating}
                   />
                 ))}
