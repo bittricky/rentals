@@ -78,7 +78,7 @@ export const typeDefs = gql`
     id: ID!
     title: String!
     description: String!
-    image: String!
+    images: [String!]!
     host: User!
     country: String!
     admin: String!
@@ -95,8 +95,8 @@ export const typeDefs = gql`
     pantries: Int!
     features: [Feature!]!
     reviews(limit: Int!, page: Int!): PropertyReviews
-    averageRating: Float!
-    reviewCount: Int!
+    averageRating: Float
+    reviewCount: Int
   }
 
   type Listings {

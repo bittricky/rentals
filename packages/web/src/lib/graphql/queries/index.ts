@@ -60,7 +60,7 @@ export const LISTING = gql`
       id
       title
       description
-      image
+      images
       host {
         id
         name
@@ -132,7 +132,7 @@ export const USER = gql`
           listing {
             id
             title
-            image
+            images
             address
             price
           }
@@ -145,7 +145,7 @@ export const USER = gql`
         result {
           id
           title
-          image
+          images
           address
           price
         }
@@ -270,7 +270,7 @@ export const FEATURED_LISTINGS = gql`
         id
         title
         description
-        image
+        images
         host {
           id
           name

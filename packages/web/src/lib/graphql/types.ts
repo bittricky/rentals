@@ -53,7 +53,7 @@ export interface Listing {
   id: string;
   title: string;
   description: string;
-  image: string;
+  images: string[];
   host: User;
   country: string;
   admin: string;

@@ -112,7 +112,7 @@ const ListingDetail = () => {
         {/* Main Content */}
         <Grid templateColumns={{ base: '1fr', lg: '1fr 350px' }} gap={8}>
           <Box>
-            <ImageGallery images={[listing.image]} />
+            <ImageGallery images={listing.images} />
             
             <Box mt={8}>
               <Heading size="xl" mb={2}>{listing.title}</Heading>

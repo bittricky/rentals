@@ -62,7 +62,7 @@ export interface Listing {
   _id: ObjectId;
   title: string;
   description: string;
-  image: string;
+  images: string[];
   host: string | ObjectId;
   type: ListingType;
   address: string;
