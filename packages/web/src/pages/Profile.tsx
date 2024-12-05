@@ -4,9 +4,9 @@ import {
   Grid,
   useToast,
 } from '@chakra-ui/react';
-import ProfileSidebar from '../components/Profile/ProfileSidebar';
-import ProfileForm from '../components/Profile/ProfileForm';
-import ProfileHeader from '../components/Profile/ProfileHeader';
+import ProfileSidebar from '../components/UserProfile/ProfileSidebar';
+import ProfileForm from '../components/UserProfile/ProfileForm';
+import ProfileHeader from '../components/UserProfile/ProfileHeader';
 import useAuthStore from '../store/authStore';
 
 export default function Profile() {
