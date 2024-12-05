@@ -2,49 +2,54 @@ import {
   Box,
   Grid,
   Heading,
+  Skeleton,
 } from '@chakra-ui/react';
+import { useQuery } from '@apollo/client';
+import { LISTINGS } from '../../lib/graphql/queries';
 import PropertyCard from './PropertyCard';
+import { ListingsFilter } from '../../lib/graphql/types';
 
-const RELATED_PROPERTIES = [
-  {
-    id: '2',
-    title: 'Modern Downtown Apartment',
-    type: 'Apartment',
-    location: 'Wellington, NZ',
-    price: 450000,
-    bedrooms: 2,
-    bathrooms: 2,
-    swimmingPools: 1,
-    pantries: 1,
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800&h=500',
-  },
-  {
-    id: '3',
-    title: 'Luxury Beachfront Villa',
-    type: 'Villa',
-    location: 'Auckland, NZ',
-    price: 850000,
-    bedrooms: 4,
-    bathrooms: 3,
-    swimmingPools: 1,
-    pantries: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800&h=500',
-  },
-  {
-    id: '4',
-    title: 'Contemporary City View Condo',
-    type: 'Condo',
-    location: 'Christchurch, NZ',
-    price: 550000,
-    bedrooms: 3,
-    bathrooms: 2,
-    swimmingPools: 1,
-    pantries: 1,
-    imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800&h=500',
-  },
-];
+interface RelatedListingsProps {
+  city: string;
+  propertyType: string;
+  currentListingId: string;
+}
 
-export default function RelatedListings() {
+export default function RelatedListings({ city, propertyType, currentListingId }: RelatedListingsProps) {
+  const { data, loading } = useQuery(LISTINGS, {
+    variables: {
+      location: city,
+      propertyType,
+      filter: ListingsFilter.PRICE_HIGH_TO_LOW,
+      limit: 4,
+      page: 1,
+    },
+  });
+
+  if (loading) {
+    return (
+      <Box>
+        <Heading size="lg" mb={6}>Similar Properties</Heading>
+        <Grid
+          templateColumns={{
+            base: '1fr',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(3, 1fr)',
+          }}
+          gap={8}
+        >
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} height="400px" borderRadius="lg" />
+          ))}
+        </Grid>
+      </Box>
+    );
+  }
+
+  const relatedListings = data?.listings.result
+    .filter((listing: any) => listing.id !== currentListingId)
+    .slice(0, 3);
+
   return (
     <Box>
       <Heading size="lg" mb={6}>Similar Properties</Heading>
@@ -56,8 +61,19 @@ export default function RelatedListings() {
         }}
         gap={8}
       >
-        {RELATED_PROPERTIES.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+        {relatedListings.map((listing: any) => (
+          <PropertyCard
+            key={listing.id}
+            id={listing.id}
+            title={listing.title}
+            type={listing.type}
+            location={`${listing.city}, ${listing.admin}`}
+            price={listing.price}
+            bedrooms={listing.bedrooms}
+            bathrooms={listing.bathrooms}
+            swimmingPools={listing.swimmingPools}
+            imageUrl={listing.images[0]}
+          />
         ))}
       </Grid>
     </Box>

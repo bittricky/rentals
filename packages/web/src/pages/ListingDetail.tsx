@@ -152,7 +152,11 @@ const ListingDetail = () => {
           </Box>
         </Grid>
         <Box mt={12}>
-          <RelatedListings currentListingId={listing.id} />
+          <RelatedListings
+            city={listing.city}
+            propertyType={listing.type}
+            currentListingId={listing.id}
+          />
         </Box>
       </Container>
     </Box>
