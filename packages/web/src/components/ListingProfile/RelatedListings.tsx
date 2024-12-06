@@ -49,33 +49,37 @@ export default function RelatedListings({ city, propertyType, currentListingId }
   const relatedListings = data?.listings.result
     .filter((listing: any) => listing.id !== currentListingId)
     .slice(0, 3);
-
+  
   return (
     <Box>
-      <Heading size="lg" mb={6}>Similar Properties</Heading>
-      <Grid
-        templateColumns={{
-          base: '1fr',
-          md: 'repeat(2, 1fr)',
-          lg: 'repeat(3, 1fr)',
-        }}
-        gap={8}
-      >
-        {relatedListings.map((listing: any) => (
-          <PropertyCard
-            key={listing.id}
-            id={listing.id}
-            title={listing.title}
-            type={listing.type}
-            location={`${listing.city}, ${listing.admin}`}
-            price={listing.price}
-            bedrooms={listing.bedrooms}
-            bathrooms={listing.bathrooms}
-            swimmingPools={listing.swimmingPools}
-            imageUrl={listing.images[0]}
-          />
-        ))}
-      </Grid>
+      {relatedListings.length > 0 && (
+        <>
+        <Heading size="lg" mb={6}>Similar Properties</Heading>
+        <Grid
+          templateColumns={{
+            base: '1fr',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(3, 1fr)',
+          }}
+          gap={8}
+        >
+          {relatedListings.map((listing: any) => (
+            <PropertyCard
+              key={listing.id}
+              id={listing.id}
+              title={listing.title}
+              type={listing.type}
+              location={`${listing.city}, ${listing.admin}`}
+              price={listing.price}
+              bedrooms={listing.bedrooms}
+              bathrooms={listing.bathrooms}
+              swimmingPools={listing.swimmingPools}
+              imageUrl={listing.images[0]}
+            />
+          ))}
+        </Grid>
+      </>
+      )}
     </Box>
   );
 }
