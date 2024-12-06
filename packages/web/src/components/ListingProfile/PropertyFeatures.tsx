@@ -5,6 +5,7 @@ import {
   Icon,
   Text,
   VStack,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   Wifi,
@@ -17,18 +18,24 @@ import {
   Warehouse,
 } from 'lucide-react';
 
-const FEATURES = [
-  { icon: Wifi, label: 'High-speed Internet' },
-  { icon: Tv, label: 'Smart Home System' },
-  { icon: Car, label: 'EV Charging' },
-  { icon: Trees, label: 'Garden Area' },
-  { icon: Wind, label: 'Air Conditioning' },
-  { icon: Shield, label: 'Security System' },
-  { icon: Snowflake, label: 'Central Heating' },
-  { icon: Warehouse, label: 'Storage Space' },
-];
+import { Feature } from '../../lib/graphql/types';
 
-export default function PropertyFeatures() {
+const FEATURE_ICONS: Record<string, any> = {
+  'wifi': Wifi,
+  'tv': Tv,
+  'ev_charging': Car,
+  'garden': Trees,
+  'air_conditioning': Wind,
+  'security': Shield,
+  'heating': Snowflake,
+  'storage': Warehouse,
+};
+
+interface PropertyFeaturesProps {
+  features: Feature[];
+}
+
+export default function PropertyFeatures({ features = [] }: PropertyFeaturesProps) {
   return (
     <Box mb={8}>
       <Heading size="md" mb={6}>Property Features</Heading>
@@ -40,19 +47,29 @@ export default function PropertyFeatures() {
         }}
         gap={6}
       >
-        {FEATURES.map((feature) => (
-          <VStack
-            key={feature.label}
-            align="start"
-            p={4}
-            bg="white"
-            rounded="lg"
-            shadow="sm"
-          >
-            <Icon as={feature.icon} size={24} color="brand.500" />
-            <Text fontWeight="medium">{feature.label}</Text>
-          </VStack>
-        ))}
+        {features.map((feature) => {
+          const IconComponent = FEATURE_ICONS[feature.icon] || Warehouse;
+          
+          return (
+            <Tooltip 
+              key={feature.name}
+              label={feature.description}
+              isDisabled={!feature.description}
+            >
+              <VStack
+                align="start"
+                p={4}
+                bg="white"
+                rounded="lg"
+                shadow="sm"
+                cursor={feature.description ? 'help' : 'default'}
+              >
+                <Icon as={IconComponent} size={24} color="brand.500" />
+                <Text fontWeight="medium">{feature.name}</Text>
+              </VStack>
+            </Tooltip>
+          );
+        })}
       </Grid>
     </Box>
   );
