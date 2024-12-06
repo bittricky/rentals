@@ -12,6 +12,8 @@ import {
   ListingsData,
   ListingsFilters,
   ListingsQuery,
+  NearbyLocationsArgs,
+  NearbyLocationsData,
 } from "./types";
 
 export const listingResolvers: IResolvers = {
@@ -101,6 +103,26 @@ export const listingResolvers: IResolvers = {
         return data;
       } catch (error) {
         throw new Error(`Failed to query listings: ${error}`);
+      }
+    },
+    nearbyLocations: async (
+      _root: undefined,
+      { listingId, radius }: NearbyLocationsArgs,
+      { db }: { db: Database }
+    ): Promise<NearbyLocationsData> => {
+      try {
+        const listing = await db.listings.findOne({ _id: new ObjectId(listingId) });
+        
+        if (!listing) {
+          throw new Error("Listing not found");
+        }
+
+        const address = `${listing.address}, ${listing.city}, ${listing.admin}, ${listing.country}`;
+        const nearbyPlaces = await Google.nearbyPlaces(address, radius);
+        
+        return nearbyPlaces;
+      } catch (error) {
+        throw new Error(`Failed to get nearby locations: ${error}`);
       }
     },
   },

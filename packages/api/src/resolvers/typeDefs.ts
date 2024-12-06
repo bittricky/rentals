@@ -166,6 +166,22 @@ export const typeDefs = gql`
     rating: Float!
   }
 
+  type NearbyPlace {
+    name: String!
+    distance: Float!
+    type: String!
+  }
+
+  type NearbyCategory {
+    name: String!
+    icon: String!
+    places: [NearbyPlace!]!
+  }
+
+  type NearbyLocations {
+    categories: [NearbyCategory!]!
+  }
+
   type Query {
     authUrl: String!
     user(id: ID!): User!
@@ -184,6 +200,7 @@ export const typeDefs = gql`
     hosts(limit: Int!, page: Int!): Hosts!
     propertyReviews(listingId: ID!, limit: Int!, page: Int!): PropertyReviews!
     hostReviews(hostId: ID!, limit: Int!, page: Int!): HostReviews!
+    nearbyLocations(listingId: ID!, radius: Float!): NearbyLocations!
   }
 
   type Mutation {

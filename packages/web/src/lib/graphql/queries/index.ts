@@ -297,3 +297,19 @@ export const FEATURED_LISTINGS = gql`
     }
   }
 `;
+
+export const NEARBY_LOCATIONS = gql`
+  query NearbyLocations($listingId: ID!, $radius: Float!) {
+    nearbyLocations(listingId: $listingId, radius: $radius) {
+      categories {
+        name
+        icon
+        places {
+          name
+          distance
+          type
+        }
+      }
+    }
+  }
+`;

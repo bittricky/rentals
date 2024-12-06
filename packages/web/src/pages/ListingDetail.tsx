@@ -133,6 +133,7 @@ const ListingDetail = () => {
               <PropertyFeatures features={listing.features} />
               
               <LocationInfo 
+                listingId={listing.id}
                 address={listing.address}
                 city={listing.city}
                 admin={listing.admin}

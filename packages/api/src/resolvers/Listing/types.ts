@@ -52,3 +52,24 @@ export interface ListingsQuery {
     $lte?: number;
   };
 }
+
+export interface NearbyLocationsArgs {
+  listingId: string;
+  radius: number;
+}
+
+export interface NearbyPlace {
+  name: string;
+  distance: number;
+  type: string;
+}
+
+export interface NearbyCategory {
+  name: string;
+  icon: string;
+  places: NearbyPlace[];
+}
+
+export interface NearbyLocationsData {
+  categories: NearbyCategory[];
+}

@@ -137,3 +137,28 @@ export interface ReviewInput {
   content: string;
   rating: number;
 }
+
+export interface NearbyPlace {
+  name: string;
+  distance: number;
+  type: string;
+}
+
+export interface NearbyCategory {
+  name: string;
+  icon: string;
+  places: NearbyPlace[];
+}
+
+export interface NearbyLocations {
+  categories: NearbyCategory[];
+}
+
+export interface NearbyLocationsData {
+  nearbyLocations: NearbyLocations;
+}
+
+export interface NearbyLocationsVars {
+  listingId: string;
+  radius: number;
+}
