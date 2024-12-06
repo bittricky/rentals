@@ -8,14 +8,14 @@
   ],
   "scripts": {
     "clean": "rimraf ./packages/*/dist",
-    "build": "tsc --build",
-    "pretest": "npm run lint && npm run build",
-    "start": "concurrently --kill-others-on-fail \"yarn start:api\" \"yarn start:web\"",
+    "build": "yarn clean && yarn workspaces run build",
+    "dev": "concurrently --kill-others-on-fail \"yarn start:api\" \"yarn start:web\"",
+    "start": "yarn build && yarn dev",
     "start:web": "yarn workspace @rentals/web dev",
     "start:api": "yarn workspace @rentals/api start",
-    "seed": "cd packages/api/ && yarn seed",
-    "gen:schema": "cd packages/web/ && yarn gen:schema",
-    "gen:generate": "cd packages/web/ && yarn gen:generate"
+    "seed": "yarn workspace @rentals/api seed",
+    "gen:schema": "yarn workspace @rentals/web gen:schema",
+    "gen:generate": "yarn workspace @rentals/web gen:generate"
   },
   "engines": {
     "node": ">=17.0.0"
