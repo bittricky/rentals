@@ -4,7 +4,7 @@ import useAuthStore from '../store/authStore';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:9000/api',
-  credentials: 'include',
+  credentials: 'include'
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -14,8 +14,8 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : '',
-    },
-    credentials: 'include',
+      'apollo-require-preflight': 'true'
+    }
   };
 });
 

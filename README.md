@@ -43,7 +43,6 @@ Create a `.env` file in the `/packages/api` directory using the template below:
 
 ```env
 PORT=4000                        # API server port
-CLIENT_URL=http://localhost:5173 # Frontend URL
 JWT_SECRET=your-jwt-secret      # Secret for JWT tokens
 SESSION_SECRET=your-session-secret
 DB_USER=your-db-user           # MongoDB Atlas username

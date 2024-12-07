@@ -40,10 +40,33 @@ if (!process.env.SESSION_SECRET) {
 const mount = async (app: express.Application) => {
   const db = await connectDatabase();
 
-  app.use(cors({
+  const corsOptions = {
+    origin: process.env.PUBLIC_URL,
     credentials: true,
-    origin: process.env.CLIENT_URL
-  }));
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-csrf-token',
+      'apollo-require-preflight',
+      'x-apollo-operation-name',
+      'x-apollo-operation-type'
+    ]
+  };
+
+  app.use(cors(corsOptions));
+
+  // Add headers middleware
+  app.use((req: Request, res: Response, next: NextFunction): void => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', process.env.PUBLIC_URL!);
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+      res.status(200).json({});
+      return;
+    }
+    next();
+  });
 
   const sessionConfig: session.SessionOptions = {
     name: "rentals",
@@ -87,7 +110,10 @@ const mount = async (app: express.Application) => {
   });
 
   const server = new ApolloServer<AppContext>({
-    schema
+    schema,
+    csrfPrevention: true,
+    cache: 'bounded',
+    includeStacktraceInErrorResponses: process.env.NODE_ENV !== 'production'
   });
 
   await server.start();
