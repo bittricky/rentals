@@ -1,6 +1,6 @@
-import { gql } from "apollo-server-express";
+import { gql } from "graphql-tag";
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type Booking {
     id: ID!
     listing: Listing!
@@ -17,6 +17,8 @@ export const typeDefs = gql`
   enum ListingType {
     APARTMENT
     HOUSE
+    CONDO
+    VILLA
   }
 
   enum ListingsFilter {
@@ -211,3 +213,5 @@ export const typeDefs = gql`
     addHostReview(hostId: ID!, input: ReviewInput!): HostReview!
   }
 `;
+
+export { typeDefs };
