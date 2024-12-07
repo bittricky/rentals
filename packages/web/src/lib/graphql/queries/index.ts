@@ -1,58 +1,5 @@
 import { gql } from '@apollo/client';
 
-// Contact Host
-export const CONTACT_HOST = gql`
-  mutation ContactHost($input: ContactHostInput!) {
-    contactHost(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-// Reviews
-export const ADD_PROPERTY_REVIEW = gql`
-  mutation AddPropertyReview($listingId: ID!, $input: ReviewInput!) {
-    addPropertyReview(listingId: $listingId, input: $input) {
-      id
-      listing {
-        id
-        title
-      }
-      author {
-        id
-        name
-        avatar
-      }
-      content
-      rating
-      createdAt
-    }
-  }
-`;
-
-export const ADD_HOST_REVIEW = gql`
-  mutation AddHostReview($hostId: ID!, $input: ReviewInput!) {
-    addHostReview(hostId: $hostId, input: $input) {
-      id
-      host {
-        id
-        user {
-          name
-        }
-      }
-      author {
-        id
-        name
-        avatar
-      }
-      content
-      rating
-      createdAt
-    }
-  }
-`;
-
 // Listings
 export const LISTINGS = gql`
   query Listings(
@@ -382,26 +329,6 @@ export const IS_LOGGED_IN = gql`
       avatar
       name
       email
-      didRequest
-    }
-  }
-`;
-
-export const LOG_OUT = gql`
-  mutation LogOut {
-    logOut {
-      didRequest
-    }
-  }
-`;
-
-export const LOG_IN = gql`
-  mutation LogIn($input: LoginInput!) {
-    logIn(input: $input) {
-      id
-      token
-      avatar
-      hasWallet
       didRequest
     }
   }

@@ -50,3 +50,23 @@ export const ADD_HOST_REVIEW = gql`
     }
   }
 `;
+
+export const LOG_OUT = gql`
+  mutation LogOut {
+    logOut {
+      didRequest
+    }
+  }
+`;
+
+export const LOG_IN = gql`
+  mutation LogIn($input: LoginInput!) {
+    logIn(input: $input) {
+      id
+      token
+      avatar
+      hasWallet
+      didRequest
+    }
+  }
+`;

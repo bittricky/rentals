@@ -16,7 +16,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import useAuthStore from '../store/authStore';
-import { LOG_IN } from '../lib/graphql/queries';
+import { LOG_IN } from '../lib/graphql/mutations';
 
 export default function Login() {
   const toast = useToast();

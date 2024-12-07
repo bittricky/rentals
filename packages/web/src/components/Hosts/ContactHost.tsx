@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { CONTACT_HOST } from '../lib/graphql/mutations';
+import { CONTACT_HOST } from '../../lib/graphql/mutations';
 
 interface ContactHostProps {
   isOpen: boolean;
