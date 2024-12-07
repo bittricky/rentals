@@ -5,9 +5,14 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  phone?: string;
-  location?: string;
-  postalCode?: string;
+}
+
+export interface Viewer {
+  id?: string;
+  token?: string;
+  avatar?: string;
+  name?: string;
+  didRequest: boolean;
 }
 
 interface AuthState {
@@ -19,6 +24,7 @@ interface AuthState {
   login: (token: string, user: User) => void;
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
+  setViewer: (viewer: Viewer) => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -26,7 +32,7 @@ const useAuthStore = create<AuthState>((set) => ({
   token: localStorage.getItem('token'),
   isAuthenticated: false,
   
-  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setUser: (user) => set({ user, isAuthenticated: Boolean(user)}),
   
   setToken: (token) => {
     if (token) {
@@ -51,6 +57,25 @@ const useAuthStore = create<AuthState>((set) => ({
     set((state) => ({
       user: state.user ? { ...state.user, ...data } : null,
     })),
+
+  setViewer: (viewer) => {
+    if (viewer.token) {
+      localStorage.setItem('token', viewer.token);
+      set({
+        token: viewer.token,
+        user: viewer.name ? {
+          id: viewer.id!,
+          name: viewer.name,
+          email: viewer.email || '',
+          avatar: viewer.avatar,
+        } : null,
+        isAuthenticated: Boolean(viewer.name)
+      });
+    } else {
+      localStorage.removeItem('token');
+      set({ user: null, token: null, isAuthenticated: false });
+    }
+  }
 }));
 
 export default useAuthStore;

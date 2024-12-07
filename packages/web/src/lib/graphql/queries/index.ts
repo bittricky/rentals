@@ -313,3 +313,16 @@ export const NEARBY_LOCATIONS = gql`
     }
   }
 `;
+
+export const IS_LOGGED_IN = gql`
+  query IsLoggedIn {
+    isLoggedIn {
+      id
+      token
+      avatar
+      name
+      email
+      didRequest
+    }
+  }
+`;

@@ -1,10 +1,14 @@
 import { Box, Button, Container, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
 import { Bell, BookmarkCheck, Home, LogOut, Menu as MenuIcon, Search, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+import { useAuth} from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
 
 export default function Header() {
   const { user, logout } = useAuthStore();
+  
+  useAuth();
 
   return (
     <Box bg="brand.600" py={4} color="white">
@@ -13,7 +17,7 @@ export default function Header() {
           <HStack spacing={8}>
             <Link to="/">
               <Text fontSize="2xl" fontWeight="bold">
-                LOGO
+                Rentals
               </Text>
             </Link>
             <HStack spacing={6} display={{ base: 'none', md: 'flex' }}>

@@ -10,6 +10,8 @@ export enum ListingType {
 export interface Viewer {
   _id?: string | ObjectId;
   token?: string;
+  name?: string;
+  email?: string;
   avatar?: string;
   walletId?: string;
   didRequest: boolean;
@@ -105,7 +107,7 @@ export interface User {
   _id: string | ObjectId;
   name: string;
   avatar: string;
-  contact: string;
+  email: string;
   phone?: string;
   token?: string;
   walletId?: string;

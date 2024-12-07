@@ -30,7 +30,7 @@ const logInViaGoogle = async (
       _id: googleId, // Use Google ID directly
       name: userName,
       avatar: userAvatar,
-      contact: userEmail,
+      email: userEmail,
       bookings: [],
       income: 0,
       listings: [],
@@ -63,6 +63,36 @@ export const viewerResolvers: IResolvers = {
         return Google.authUrl;
       } catch (error) {
         throw new Error(`Failed to query Google Auth Url: ${error}`);
+      }
+    },
+    isLoggedIn: async (
+      _root: undefined,
+      _args: {},
+      { db, req }: { db: Database; req: Request }
+    ): Promise<Viewer> => {
+      try {
+        const token = req.session?.token;
+        if (!token) {
+          return { didRequest: true };
+        }
+
+        const decoded = jwt.verify(token, JWT_SECRET) as { _id: string };
+        const user = await db.users.findOne(createIdFilter(decoded._id));
+        
+        if (!user) {
+          return { didRequest: true };
+        }
+
+        return {
+          _id: user._id,
+          token,
+          avatar: user.avatar,
+          name: user.name,
+          email: user.email,
+          didRequest: true
+        };
+      } catch (error) {
+        return { didRequest: true };
       }
     },
   },

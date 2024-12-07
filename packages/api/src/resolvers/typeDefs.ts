@@ -139,7 +139,9 @@ const typeDefs = gql`
 
   type Viewer {
     id: ID
+    name: String
     token: String
+    email: String
     avatar: String
     hasWallet: Boolean
     didRequest: Boolean!
