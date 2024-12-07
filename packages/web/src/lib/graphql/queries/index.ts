@@ -1,5 +1,59 @@
 import { gql } from '@apollo/client';
 
+// Contact Host
+export const CONTACT_HOST = gql`
+  mutation ContactHost($input: ContactHostInput!) {
+    contactHost(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+// Reviews
+export const ADD_PROPERTY_REVIEW = gql`
+  mutation AddPropertyReview($listingId: ID!, $input: ReviewInput!) {
+    addPropertyReview(listingId: $listingId, input: $input) {
+      id
+      listing {
+        id
+        title
+      }
+      author {
+        id
+        name
+        avatar
+      }
+      content
+      rating
+      createdAt
+    }
+  }
+`;
+
+export const ADD_HOST_REVIEW = gql`
+  mutation AddHostReview($hostId: ID!, $input: ReviewInput!) {
+    addHostReview(hostId: $hostId, input: $input) {
+      id
+      host {
+        id
+        user {
+          name
+        }
+      }
+      author {
+        id
+        name
+        avatar
+      }
+      content
+      rating
+      createdAt
+    }
+  }
+`;
+
+// Listings
 export const LISTINGS = gql`
   query Listings(
     $location: String
@@ -116,6 +170,7 @@ export const LISTING = gql`
   }
 `;
 
+// Users
 export const USER = gql`
   query User($id: ID!) {
     user(id: $id) {
@@ -164,6 +219,7 @@ export const USER = gql`
   }
 `;
 
+// Hosts
 export const GET_HOSTS = gql`
   query Hosts($limit: Int!, $page: Int!) {
     hosts(limit: $limit, page: $page) {
@@ -220,6 +276,7 @@ export const GET_HOST = gql`
   }
 `;
 
+// Reviews
 export const PROPERTY_REVIEWS = gql`
   query PropertyReviews($listingId: ID!, $limit: Int!, $page: Int!) {
     propertyReviews(listingId: $listingId, limit: $limit, page: $page) {
@@ -258,6 +315,7 @@ export const HOST_REVIEWS = gql`
   }
 `;
 
+// Featured Listings
 export const FEATURED_LISTINGS = gql`
   query FeaturedListings($limit: Int!) {
     listings(
@@ -298,6 +356,7 @@ export const FEATURED_LISTINGS = gql`
   }
 `;
 
+// Nearby Locations
 export const NEARBY_LOCATIONS = gql`
   query NearbyLocations($listingId: ID!, $radius: Float!) {
     nearbyLocations(listingId: $listingId, radius: $radius) {
@@ -314,6 +373,7 @@ export const NEARBY_LOCATIONS = gql`
   }
 `;
 
+// Authentication
 export const IS_LOGGED_IN = gql`
   query IsLoggedIn {
     isLoggedIn {
@@ -330,6 +390,18 @@ export const IS_LOGGED_IN = gql`
 export const LOG_OUT = gql`
   mutation LogOut {
     logOut {
+      didRequest
+    }
+  }
+`;
+
+export const LOG_IN = gql`
+  mutation LogIn($input: LoginInput!) {
+    logIn(input: $input) {
+      id
+      token
+      avatar
+      hasWallet
       didRequest
     }
   }

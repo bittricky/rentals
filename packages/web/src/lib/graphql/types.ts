@@ -1,3 +1,5 @@
+export * from './__generated__/graphql';
+
 export interface Viewer {
   id?: string;
   token?: string;

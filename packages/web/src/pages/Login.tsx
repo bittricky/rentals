@@ -14,26 +14,15 @@ import {
 } from '@chakra-ui/react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { Link, useNavigate } from 'react-router-dom';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import useAuthStore from '../store/authStore';
-
-const LOGIN = gql`
-  mutation LogIn($input: LoginInput!) {
-    logIn(input: $input) {
-      id
-      token
-      avatar
-      hasWallet
-      didRequest
-    }
-  }
-`;
+import { LOG_IN } from '../lib/graphql/queries';
 
 export default function Login() {
   const toast = useToast();
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
-  const [loginMutation] = useMutation(LOGIN);
+  const [loginMutation] = useMutation(LOG_IN);
 
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
