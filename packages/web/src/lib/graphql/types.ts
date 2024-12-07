@@ -1,10 +1,12 @@
-export * from './__generated__/graphql';
+export * from './__generated__/types';
+export * from './__generated__/operations';
 
 export interface Viewer {
   id?: string;
   token?: string;
   avatar?: string;
-  hasWallet?: boolean;
+  name?: string;
+  email?: string;
   didRequest: boolean;
 }
 

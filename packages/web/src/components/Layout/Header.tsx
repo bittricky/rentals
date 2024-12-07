@@ -5,7 +5,7 @@ import { useMutation } from '@apollo/client';
 
 import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
-import { LOG_OUT } from '../../lib/graphql/queries';
+import { LOG_OUT } from '../../lib/graphql/mutations';
 
 export default function Header() {
   const { user, logout: localLogout } = useAuthStore();
