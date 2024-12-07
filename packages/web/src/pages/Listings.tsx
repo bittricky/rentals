@@ -93,7 +93,6 @@ export default function Listings() {
       <Container maxW="container.xl">
         <Grid gap={8}>
           <Box>
-            <Heading mb={4}>Find Your Dream Property</Heading>
             <HStack spacing={4}>
               <Box flex={1}>
                 <SearchBar 
