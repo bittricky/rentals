@@ -63,7 +63,7 @@ export default function Home() {
       <Box bg="brand.600" py={12}>
         <Container maxW="container.xl">
           <VStack spacing={4} textAlign="center" color="white">
-            <Heading size="2xl">Find Your Vacation Home</Heading>
+            <Heading size="2xl">Explore Your Perfect Vacation Escape</Heading>
             <Text fontSize="xl">
               Find the best hiding spots for your next getaway
             </Text>
