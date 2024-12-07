@@ -28,7 +28,7 @@ export interface User {
   id: string;
   name: string;
   avatar: string;
-  contact: string;
+  email: string;
   hasWallet: boolean;
   income?: number;
   bookings?: Bookings;

@@ -111,7 +111,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     avatar: String!
-    contact: String!
+    email: String!
     hasWallet: Boolean!
     income: Int
     isHost: Boolean!

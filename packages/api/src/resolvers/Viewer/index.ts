@@ -47,7 +47,7 @@ const logInViaGoogle = async (
       $set: {
         name: userName,
         avatar: userAvatar,
-        contact: userEmail,
+        email: userEmail,
       },
     },
     { returnDocument: "after" }
@@ -116,7 +116,7 @@ export const viewerResolvers: IResolvers = {
             _id: idToString(viewer._id),
             name: viewer.name,
             avatar: viewer.avatar,
-            contact: viewer.contact,
+            email: viewer.email,
           },
           JWT_SECRET,
           { expiresIn: "1d" }
