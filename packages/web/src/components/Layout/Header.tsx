@@ -1,14 +1,32 @@
 import { Box, Button, Container, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
-import { Bell, BookmarkCheck, Home, LogOut, Menu as MenuIcon, Search, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Bell, BookmarkCheck, LogOut, Menu as MenuIcon, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
 
-import { useAuth} from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import useAuthStore from '../../store/authStore';
+import { LOG_OUT } from '../../lib/graphql/queries';
 
 export default function Header() {
-  const { user, logout } = useAuthStore();
+  const { user, logout: localLogout } = useAuthStore();
+  const navigate = useNavigate();
   
   useAuth();
+
+  const [logOut] = useMutation(LOG_OUT, {
+    onCompleted: () => {
+      localLogout();
+      navigate('/');
+    }
+  });
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+    } catch (error) {
+      console.error('Failed to logout:', error);
+    }
+  };
 
   return (
     <Box bg="brand.600" py={4} color="white">
@@ -73,7 +91,7 @@ export default function Header() {
                   <MenuList color="gray.800">
                     <MenuItem icon={<Icon as={User} />}>Profile</MenuItem>
                     <MenuItem icon={<Icon as={BookmarkCheck} />}>Saved</MenuItem>
-                    <MenuItem icon={<Icon as={LogOut} />} onClick={logout}>
+                    <MenuItem icon={<Icon as={LogOut} />} onClick={handleLogout}>
                       Logout
                     </MenuItem>
                   </MenuList>
