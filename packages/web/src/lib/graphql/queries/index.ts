@@ -122,7 +122,7 @@ export const USER = gql`
       id
       name
       avatar
-      contact
+      email
       hasWallet
       income
       bookings(limit: 10, page: 1) {
@@ -194,7 +194,7 @@ export const GET_HOST = gql`
         id
         name
         avatar
-        contact
+        email
       }
       license
       agency
