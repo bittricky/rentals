@@ -2,7 +2,7 @@
 
 A modern vacation rental application
 
-> Ready to explore the ever expanding horizons of your next getaway—no strings attached?
+> Are you ready to explore the ever expanding horizons of your next getaway—no strings attached?
 
 ## Features
 
