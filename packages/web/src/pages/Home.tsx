@@ -65,7 +65,7 @@ export default function Home() {
           <VStack spacing={4} textAlign="center" color="white">
             <Heading size="2xl">Explore Your Perfect Vacation Escape</Heading>
             <Text fontSize="xl">
-              Escape the bounds of space and time with the perfect hiding spots for your next getaway.
+              Rent space and time, and discover new dimensions of relaxation on your next getaway.
             </Text>
 
           </VStack>
