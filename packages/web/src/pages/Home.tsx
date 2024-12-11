@@ -63,9 +63,9 @@ export default function Home() {
       <Box bg="brand.600" py={12}>
         <Container maxW="container.xl">
           <VStack spacing={4} textAlign="center" color="white">
-            <Heading size="2xl">Explore Your Perfect Vacation Escape</Heading>
+            <Heading size="2xl">Step Into a New Frame of Reference</Heading>
             <Text fontSize="xl">
-              Find the best hiding spots for your next getaway
+              Rent space and time, and discover new dimensions of relaxation on your next getaway.
             </Text>
 
           </VStack>

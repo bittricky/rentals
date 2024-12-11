@@ -1,6 +1,8 @@
 # Rentals
 
-> A modern vacation rental application
+A modern vacation rental application
+
+> Are you ready to explore the ever expanding horizons of your next getaway—no strings attached?
 
 ## Features
 
